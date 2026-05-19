@@ -1,0 +1,6 @@
+@Tutorly.Api_HostAddress = http://localhost:5133
+
+GET {{Tutorly.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

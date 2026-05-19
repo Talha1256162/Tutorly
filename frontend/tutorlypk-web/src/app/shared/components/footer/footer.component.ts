@@ -1,0 +1,50 @@
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { IconComponent } from '../icon/icon.component';
+
+@Component({
+  selector: 'app-footer',
+  standalone: true,
+  imports: [RouterLink, IconComponent],
+  template: `
+    <footer class="relative mt-32 border-t border-white/5">
+      <div class="mx-auto max-w-7xl px-6 py-16 grid md:grid-cols-4 gap-10 text-sm">
+        <div>
+          <div class="flex items-center gap-2 mb-3">
+            <div class="h-8 w-8 rounded-xl bg-primary-gradient grid place-items-center">
+              <app-icon name="sparkles" className="h-4 w-4 text-primary-foreground" />
+            </div>
+            <span class="font-display font-bold text-lg">Lumora</span>
+          </div>
+          <p class="text-muted-foreground">Pakistan's Premium AI Tutor Marketplace.</p>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-3">Students</h4>
+          <ul class="space-y-2 text-muted-foreground">
+            <li><a routerLink="/tutors">Find Tutors</a></li>
+            <li><a routerLink="/dashboard">Student Dashboard</a></li>
+            <li><a routerLink="/" fragment="how">How It Works</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-3">Tutors</h4>
+          <ul class="space-y-2 text-muted-foreground">
+            <li><a routerLink="/role">Join as Tutor</a></li>
+            <li><a routerLink="/tutor-dashboard">Tutor Dashboard</a></li>
+            <li><a routerLink="/" fragment="pricing">Pricing</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold mb-3">Company</h4>
+          <ul class="space-y-2 text-muted-foreground">
+            <li><a>About</a></li>
+            <li><a>Trust & Safety</a></li>
+            <li><a>Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/5 py-6 text-center text-xs text-muted-foreground">© 2026 Lumora. Made with care in Pakistan.</div>
+    </footer>
+  `,
+})
+export class FooterComponent {}

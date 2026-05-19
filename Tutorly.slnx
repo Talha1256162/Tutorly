@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/backend/">
+    <Project Path="backend/Tutorly.Api/Tutorly.Api.csproj" />
+    <Project Path="backend/Tutorly.Application/Tutorly.Application.csproj" />
+    <Project Path="backend/Tutorly.Domain/Tutorly.Domain.csproj" />
+    <Project Path="backend/Tutorly.Infrastructure/Tutorly.Infrastructure.csproj" />
+    <Project Path="backend/Tutorly.Shared/Tutorly.Shared.csproj" />
+  </Folder>
+</Solution>
