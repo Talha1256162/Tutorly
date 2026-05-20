@@ -72,6 +72,19 @@ export interface TutorSummary {
   tagline: string;
 }
 
+export interface TutorSearchFilters {
+  search?: string;
+  sort?: string;
+  subjects?: string[];
+  classLevels?: string[];
+  cities?: string[];
+  modes?: string[];
+  genders?: string[];
+  languages?: string[];
+  minFee?: number | null;
+  maxFee?: number | null;
+}
+
 export interface TutorProfile {
   summary: TutorSummary;
   about: string;

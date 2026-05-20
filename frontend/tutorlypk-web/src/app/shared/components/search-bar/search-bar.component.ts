@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IconComponent } from '../icon/icon.component';
 
@@ -13,11 +13,25 @@ import { IconComponent } from '../icon/icon.component';
       <button class="hidden sm:inline-flex items-center gap-2 rounded-xl bg-white/5 px-4 py-2 text-sm font-semibold">
         <app-icon name="sparkles" className="h-4 w-4 text-cyan" /> AI Best Match
       </button>
-      <button class="rounded-xl bg-white/5 px-4 py-2 text-sm font-semibold">Sort: Top rated</button>
+      <label class="sr-only" for="tutor-sort">Sort tutors</label>
+      <select
+        id="tutor-sort"
+        [(ngModel)]="sort"
+        (ngModelChange)="sortChange.emit(sort)"
+        class="rounded-xl bg-white/5 px-4 py-2 text-sm font-semibold outline-none"
+      >
+        <option value="top-rated">Top rated</option>
+        <option value="price-low">Price low</option>
+        <option value="price-high">Price high</option>
+        <option value="experience">Experience</option>
+        <option value="reviews">Most reviewed</option>
+      </select>
     </div>
   `,
 })
 export class SearchBarComponent {
+  @Input() sort = 'top-rated';
   value = '';
   @Output() searchChange = new EventEmitter<string>();
+  @Output() sortChange = new EventEmitter<string>();
 }

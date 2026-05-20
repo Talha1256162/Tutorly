@@ -74,15 +74,65 @@ public sealed class TutorRepository : ITutorRepository
                    ))
               and (@MaxFee is null or tp.FeeAmount <= @MaxFee)
               and (@MinFee is null or tp.FeeAmount >= @MinFee)
+              and (@HasSubjects = 0 or exists (
+                    select 1
+                    from tutorSubjects x
+                    inner join lookupValues v on v.Id = x.SubjectLookupValueId
+                    where x.TutorProfileId = tp.Id and (v.Name in @Subjects or v.Code in @Subjects)
+              ))
+              and (@HasClassLevels = 0 or exists (
+                    select 1
+                    from tutorClassLevels x
+                    inner join lookupValues v on v.Id = x.ClassLevelLookupValueId
+                    where x.TutorProfileId = tp.Id and (v.Name in @ClassLevels or v.Code in @ClassLevels)
+              ))
+              and (@HasCities = 0 or city.Name in @Cities or city.Code in @Cities)
+              and (@HasModes = 0 or mode.Name in @Modes or mode.Code in @Modes)
+              and (@HasGenders = 0 or gender.Name in @Genders or gender.Code in @Genders)
+              and (@HasLanguages = 0 or exists (
+                    select 1
+                    from tutorLanguages x
+                    inner join lookupValues v on v.Id = x.LanguageLookupValueId
+                    where x.TutorProfileId = tp.Id and (v.Name in @Languages or v.Code in @Languages)
+              ))
             order by
                 case when @Sort = 'price-low' then tp.FeeAmount end asc,
+                case when @Sort = 'price-high' then tp.FeeAmount end desc,
+                case when @Sort = 'experience' then tp.ExperienceYears end desc,
+                case when @Sort = 'reviews' then tp.ReviewCount end desc,
                 case when @Sort = 'top-rated' then tp.Rating end desc,
                 tp.MatchPercentage desc,
                 tp.Rating desc;
             """;
 
+        var subjects = NormalizeFilter(query.Subjects);
+        var classLevels = NormalizeFilter(query.ClassLevels);
+        var cities = NormalizeFilter(query.Cities);
+        var modes = NormalizeFilter(query.Modes);
+        var genders = NormalizeFilter(query.Genders);
+        var languages = NormalizeFilter(query.Languages);
+        var parameters = new
+        {
+            Search = string.IsNullOrWhiteSpace(query.Search) ? null : query.Search.Trim(),
+            Subjects = ToSqlList(subjects),
+            HasSubjects = subjects.Length > 0,
+            ClassLevels = ToSqlList(classLevels),
+            HasClassLevels = classLevels.Length > 0,
+            Cities = ToSqlList(cities),
+            HasCities = cities.Length > 0,
+            Modes = ToSqlList(modes),
+            HasModes = modes.Length > 0,
+            Genders = ToSqlList(genders),
+            HasGenders = genders.Length > 0,
+            Languages = ToSqlList(languages),
+            HasLanguages = languages.Length > 0,
+            query.MinFee,
+            query.MaxFee,
+            Sort = string.IsNullOrWhiteSpace(query.Sort) ? "top-rated" : query.Sort.Trim()
+        };
+
         using var connection = _connectionFactory.CreateConnection();
-        var rows = await connection.QueryAsync(new CommandDefinition(sql, query, cancellationToken: cancellationToken));
+        var rows = await connection.QueryAsync(new CommandDefinition(sql, parameters, cancellationToken: cancellationToken));
         return rows.Select(MapTutorSummary).ToArray();
     }
 
@@ -173,5 +223,19 @@ public sealed class TutorRepository : ITutorRepository
             row.MatchPercentage,
             row.MatchReason,
             row.Tagline);
+    }
+
+    private static string[] NormalizeFilter(IEnumerable<string> values)
+    {
+        return values
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Select(value => value.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+    }
+
+    private static string[] ToSqlList(string[] values)
+    {
+        return values.Length == 0 ? new[] { "__none__" } : values;
     }
 }
