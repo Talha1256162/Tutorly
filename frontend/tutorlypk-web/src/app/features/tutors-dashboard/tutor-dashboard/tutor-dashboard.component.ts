@@ -1,4 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/auth/auth.service';
 import { ApiService } from '../../../core/services/api.service';
 import { TutorDashboard } from '../../../core/models/api.models';
 import { StatsCardComponent } from '../../../shared/components/stats-card/stats-card.component';
@@ -6,33 +8,33 @@ import { StatsCardComponent } from '../../../shared/components/stats-card/stats-
 @Component({
   selector: 'app-tutor-dashboard',
   standalone: true,
-  imports: [StatsCardComponent],
+  imports: [RouterLink, StatsCardComponent],
   template: `
     @if (dashboard) {
       <section class="mx-auto max-w-7xl px-6 py-8">
         <div class="glass-strong rounded-3xl p-8 shadow-card bg-hero-gradient">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-            <div><div class="text-cyan text-xs font-bold uppercase tracking-wider mb-2">★ Tutor portal</div><h1 class="font-display text-4xl font-bold">{{ dashboard.headline }} 🌙</h1><p class="text-muted-foreground mt-2">{{ dashboard.subheadline }}</p></div>
-            <div class="md:w-64"><div class="flex justify-between text-sm mb-2"><span class="text-muted-foreground">Profile strength</span><b>{{ dashboard.profileStrength }}%</b></div><div class="h-2 rounded-full bg-white/5 overflow-hidden"><div class="h-full bg-aurora" [style.width.%]="dashboard.profileStrength"></div></div></div>
+            <div><div class="text-cyan text-xs font-bold uppercase tracking-wider mb-2">Teacher portal</div><h1 class="font-display text-4xl font-bold">{{ dashboard.headline }}</h1><p class="text-muted-foreground mt-2">{{ dashboard.subheadline }}</p></div>
+            <div class="md:w-64"><div class="flex justify-between text-sm mb-2"><span class="text-muted-foreground">Profile strength</span><b>{{ dashboard.profileStrength }}%</b></div><div class="h-2 rounded-full bg-white/5 overflow-hidden"><div class="h-full bg-aurora" [style.width.%]="dashboard.profileStrength"></div></div><a routerLink="/messages" class="mt-5 inline-flex w-full justify-center rounded-xl bg-primary-gradient px-4 py-3 font-semibold text-primary-foreground">Open student messages</a></div>
           </div>
         </div>
         <div class="grid md:grid-cols-4 gap-5 mt-8">@for (stat of dashboard.stats; track stat.label) {<app-stats-card [stat]="stat" />}</div>
         <div class="grid lg:grid-cols-[1.4fr_1fr] gap-6 mt-8">
           <div class="space-y-6">
             <section class="glass-strong rounded-3xl p-7 shadow-card min-h-[300px]">
-              <h2 class="font-display text-xl font-semibold">Earnings — last 6 months</h2>
+              <h2 class="font-display text-xl font-semibold">Earnings - last 6 months</h2>
               <div class="h-48 flex items-end gap-8 mt-8 border-b border-white/10">
                 @for (value of dashboard.earnings.values; track $index) {
                   <div class="flex-1 rounded-t-2xl bg-primary/20" [style.height.%]="value / 2"></div>
                 }
               </div>
               <div class="flex justify-between text-xs text-muted-foreground mt-3">@for (label of dashboard.earnings.labels; track label) {<span>{{ label }}</span>}</div>
-              <div class="mt-8 pt-6 border-t border-white/5 flex justify-between items-end"><div><div class="text-muted-foreground">YTD earnings</div><div class="font-display text-3xl font-bold">{{ dashboard.earnings.totalText }}</div></div><button class="rounded-2xl border border-white/10 px-5 py-2 font-semibold">Withdraw ↗</button></div>
+              <div class="mt-8 pt-6 border-t border-white/5 flex justify-between items-end"><div><div class="text-muted-foreground">YTD earnings</div><div class="font-display text-3xl font-bold">{{ dashboard.earnings.totalText }}</div></div><button class="rounded-2xl border border-white/10 px-5 py-2 font-semibold">Withdraw</button></div>
             </section>
             <section class="glass-strong rounded-3xl p-7 shadow-card">
               <h2 class="font-display text-xl font-semibold mb-6">New student requests</h2>
               @for (request of dashboard.studentRequests; track request.studentName) {
-                <div class="glass rounded-3xl p-4 flex items-center gap-4 mb-4"><div class="h-12 w-12 rounded-full bg-primary-gradient grid place-items-center text-primary-foreground font-semibold">{{ request.initial }}</div><div class="flex-1"><div class="font-semibold">{{ request.studentName }}</div><div class="text-sm text-muted-foreground">{{ request.detail }} · {{ request.receivedAt }}</div></div><button class="rounded-2xl border border-white/10 px-4 py-2 font-semibold">Decline</button><button class="rounded-2xl bg-primary-gradient px-4 py-2 font-semibold text-primary-foreground">Accept</button></div>
+                <div class="glass rounded-3xl p-4 flex items-center gap-4 mb-4"><div class="h-12 w-12 rounded-full bg-primary-gradient grid place-items-center text-primary-foreground font-semibold">{{ request.initial }}</div><div class="flex-1"><div class="font-semibold">{{ request.studentName }}</div><div class="text-sm text-muted-foreground">{{ request.detail }} - {{ request.receivedAt }}</div></div><button class="rounded-2xl border border-white/10 px-4 py-2 font-semibold">Decline</button><button class="rounded-2xl bg-primary-gradient px-4 py-2 font-semibold text-primary-foreground">Accept</button></div>
               }
             </section>
             <section class="glass-strong rounded-3xl p-7 shadow-card">
@@ -44,7 +46,7 @@ import { StatsCardComponent } from '../../../shared/components/stats-card/stats-
           </div>
           <div class="space-y-6">
             <section class="glass-strong rounded-3xl p-7 shadow-card">
-              <h2 class="font-display text-xl font-semibold mb-5">Availability — this week</h2>
+              <h2 class="font-display text-xl font-semibold mb-5">Availability - this week</h2>
               <div class="grid grid-cols-7 gap-2 text-center text-xs text-muted-foreground mb-2">@for (day of dashboard.availability; track $index) {<div>{{ day.day }}</div>}</div>
               <div class="grid grid-cols-7 gap-2">
                 @for (day of dashboard.availability; track $index) {
@@ -56,7 +58,7 @@ import { StatsCardComponent } from '../../../shared/components/stats-card/stats-
             <section class="glass-strong rounded-3xl p-7 shadow-card">
               <h2 class="font-display text-xl font-semibold mb-5">Recent reviews</h2>
               @for (review of dashboard.recentReviews; track review.reviewerName) {
-                <div class="glass rounded-3xl p-5 mb-4"><div class="flex justify-between"><b>{{ review.reviewerName }}</b><span class="text-warning">★★★★★</span></div><p class="text-muted-foreground mt-2">"{{ review.quote }}"</p></div>
+                <div class="glass rounded-3xl p-5 mb-4"><div class="flex justify-between"><b>{{ review.reviewerName }}</b><span class="text-warning">5 / 5</span></div><p class="text-muted-foreground mt-2">"{{ review.quote }}"</p></div>
               }
             </section>
             <section class="glass-strong rounded-3xl p-7 shadow-card">
@@ -71,10 +73,22 @@ import { StatsCardComponent } from '../../../shared/components/stats-card/stats-
 })
 export class TutorDashboardComponent implements OnInit {
   dashboard?: TutorDashboard;
-  constructor(private readonly api: ApiService, private readonly cdr: ChangeDetectorRef) {}
+
+  constructor(
+    private readonly api: ApiService,
+    private readonly authService: AuthService,
+    private readonly cdr: ChangeDetectorRef,
+  ) {}
+
   ngOnInit(): void {
     this.api.tutorDashboard().subscribe(dashboard => {
-      this.dashboard = dashboard;
+      const fullName = this.authService.currentUser?.fullName ?? dashboard.tutorName;
+      const firstName = fullName.split(' ')[0];
+      this.dashboard = {
+        ...dashboard,
+        tutorName: fullName,
+        headline: `Good evening, ${firstName}`,
+      };
       this.cdr.detectChanges();
     });
   }

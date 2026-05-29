@@ -37,6 +37,9 @@ public interface IDashboardRepository
 public interface IMessageRepository
 {
     Task<IReadOnlyList<Conversation>> GetConversationsAsync(Guid userId, CancellationToken cancellationToken);
+    Task<Conversation?> GetConversationAsync(Guid userId, Guid conversationId, CancellationToken cancellationToken);
+    Task<Conversation> GetOrCreateTutorConversationAsync(Guid studentUserId, string tutorId, CancellationToken cancellationToken);
+    Task<MessageItem> SendMessageAsync(Guid userId, Guid conversationId, string body, CancellationToken cancellationToken);
 }
 
 public interface IAuthService

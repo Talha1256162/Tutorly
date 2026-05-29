@@ -14,7 +14,7 @@ import { IconComponent } from '../icon/icon.component';
             <div class="h-8 w-8 rounded-xl bg-primary-gradient grid place-items-center">
               <app-icon name="sparkles" className="h-4 w-4 text-primary-foreground" />
             </div>
-            <span class="font-display font-bold text-lg">Lumora</span>
+            <span class="font-display font-bold text-lg">Mentora</span>
           </div>
           <p class="text-muted-foreground">Pakistan's Premium AI Tutor Marketplace.</p>
         </div>
@@ -43,7 +43,7 @@ import { IconComponent } from '../icon/icon.component';
           </ul>
         </div>
       </div>
-      <div class="border-t border-white/5 py-6 text-center text-xs text-muted-foreground">© 2026 Lumora. Made with care in Pakistan.</div>
+      <div class="border-t border-white/5 py-6 text-center text-xs text-muted-foreground">© 2026 Mentora. Made with care in Pakistan.</div>
     </footer>
   `,
 })

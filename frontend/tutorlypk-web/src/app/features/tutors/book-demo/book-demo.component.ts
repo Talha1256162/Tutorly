@@ -46,14 +46,14 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
                   <button (click)="selectedMode = mode" class="rounded-3xl border border-white/10 bg-white/5 p-5 text-left" [class.ring-glow]="mode === selectedMode">
                     <app-icon [name]="mode === 'Online' ? 'video' : 'house'" className="h-5 w-5 text-primary mb-3" />
                     <div class="font-semibold">{{ mode }}</div>
-                    <div class="text-sm text-muted-foreground">{{ mode === 'Online' ? 'Lumora video room' : 'Tutor visits your home' }}</div>
+                    <div class="text-sm text-muted-foreground">{{ mode === 'Online' ? 'Mentora video room' : 'Tutor visits your home' }}</div>
                   </button>
                 }
               </div>
             </section>
 
             <section class="glass-strong rounded-3xl p-7 shadow-card">
-              <h2 class="font-display text-xl font-semibold flex items-center gap-2 mb-5"><app-icon name="sparkles" className="h-5 w-5 text-primary" /> 4. Tell the tutor about you</h2>
+              <h2 class="font-display text-xl font-semibold flex items-center gap-2 mb-5"><app-icon name="sparkles" className="h-5 w-5 text-primary" /> 4. Tell the tutor about the learner</h2>
               <div class="grid md:grid-cols-2 gap-3 mb-3">
                 <input [(ngModel)]="studentName" class="w-full rounded-3xl bg-white/5 border border-white/10 px-5 py-4 outline-none text-muted-foreground" placeholder="Student name" />
                 <input [(ngModel)]="parentPhone" class="w-full rounded-3xl bg-white/5 border border-white/10 px-5 py-4 outline-none text-muted-foreground" placeholder="Parent phone" />

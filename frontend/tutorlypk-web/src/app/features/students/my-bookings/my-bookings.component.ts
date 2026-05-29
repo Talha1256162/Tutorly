@@ -13,7 +13,7 @@ import { BookingSummary } from '../../../core/models/api.models';
         <div class="glass-strong rounded-3xl p-8 shadow-card bg-hero-gradient">
           <div class="text-cyan text-xs font-bold uppercase tracking-wider mb-2">My bookings</div>
           <h1 class="font-display text-4xl font-bold">Demo classes and active sessions.</h1>
-          <p class="text-muted-foreground mt-2">Track upcoming demos before committing to a tutor.</p>
+          <p class="text-muted-foreground mt-2">Track upcoming demos before committing to a teacher.</p>
         </div>
 
         <div class="grid md:grid-cols-2 gap-5 mt-8">

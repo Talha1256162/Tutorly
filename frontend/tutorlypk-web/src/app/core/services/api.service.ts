@@ -7,10 +7,22 @@ import {
   BookingOption,
   BookingRequest,
   BookingSummary,
+  AdminInsightSummary,
   Conversation,
+  CompleteInsightAttemptResponse,
+  InsightDashboardSummary,
+  InsightDiagnosticSetup,
+  InsightLearningGapReport,
+  InsightMatchedTutorCard,
+  InsightProgressReport,
   LookupValue,
+  MessageItem,
+  StartInsightDiagnosticAttemptRequest,
+  StartInsightDiagnosticAttemptResponse,
   StudentDashboard,
+  SubmitInsightAnswerResponse,
   TutorDashboard,
+  TutorInsightSummary,
   TutorProfile,
   TutorSearchFilters,
   TutorSummary,
@@ -18,7 +30,6 @@ import {
 import {
   bookingFor,
   mockBookings,
-  mockConversations,
   mockLookups,
   mockStudentDashboard,
   mockTutorDashboard,
@@ -59,7 +70,21 @@ export class ApiService {
   }
 
   conversations(): Observable<Conversation[]> {
-    return this.get<Conversation[]>('/messages/conversations', mockConversations);
+    return this.http.get<ApiResponse<Conversation[]>>(`${this.baseUrl}/messages/conversations`).pipe(
+      map(response => response.data ?? []),
+    );
+  }
+
+  startConversation(tutorId: string): Observable<Conversation> {
+    return this.http.post<ApiResponse<Conversation>>(`${this.baseUrl}/messages/with-tutor/${encodeURIComponent(tutorId)}`, {}).pipe(
+      map(response => response.data),
+    );
+  }
+
+  sendMessage(conversationId: string, body: string): Observable<MessageItem> {
+    return this.http.post<ApiResponse<MessageItem>>(`${this.baseUrl}/messages/conversations/${conversationId}/messages`, { body }).pipe(
+      map(response => response.data),
+    );
   }
 
   savedTutors(): Observable<TutorSummary[]> {
@@ -81,6 +106,96 @@ export class ApiService {
       map(response => response.data),
       catchError(() => of(null)),
     );
+  }
+
+  insightSetup(classLevel = 5, subject?: string): Observable<InsightDiagnosticSetup> {
+    let params = new HttpParams().set('classLevel', String(classLevel));
+    if (subject) {
+      params = params.set('subject', subject);
+    }
+
+    return this.get<InsightDiagnosticSetup>('/insight/setup', this.defaultInsightSetup(), params);
+  }
+
+  startInsightDiagnostic(request: StartInsightDiagnosticAttemptRequest): Observable<StartInsightDiagnosticAttemptResponse> {
+    return this.http.post<ApiResponse<StartInsightDiagnosticAttemptResponse>>(`${this.baseUrl}/insight/diagnostic-attempts`, request).pipe(
+      map(response => response.data),
+    );
+  }
+
+  insightAttemptQuestions(attemptId: string): Observable<StartInsightDiagnosticAttemptResponse['questions']> {
+    return this.http.get<ApiResponse<StartInsightDiagnosticAttemptResponse['questions']>>(`${this.baseUrl}/insight/diagnostic-attempts/${attemptId}/questions`).pipe(
+      map(response => response.data ?? []),
+    );
+  }
+
+  submitInsightAnswer(attemptId: string, questionId: string, selectedOptionCode: string): Observable<SubmitInsightAnswerResponse> {
+    return this.http.post<ApiResponse<SubmitInsightAnswerResponse>>(`${this.baseUrl}/insight/diagnostic-attempts/${attemptId}/answers`, {
+      questionId,
+      selectedOptionCode,
+    }).pipe(map(response => response.data));
+  }
+
+  completeInsightAttempt(attemptId: string): Observable<CompleteInsightAttemptResponse> {
+    return this.http.post<ApiResponse<CompleteInsightAttemptResponse>>(`${this.baseUrl}/insight/diagnostic-attempts/${attemptId}/complete`, {}).pipe(
+      map(response => response.data),
+    );
+  }
+
+  insightReport(reportId: string): Observable<InsightLearningGapReport> {
+    return this.http.get<ApiResponse<InsightLearningGapReport>>(`${this.baseUrl}/insight/reports/${reportId}`).pipe(
+      map(response => response.data),
+    );
+  }
+
+  insightReportByAttempt(attemptId: string): Observable<InsightLearningGapReport> {
+    return this.http.get<ApiResponse<InsightLearningGapReport>>(`${this.baseUrl}/insight/reports/by-attempt/${attemptId}`).pipe(
+      map(response => response.data),
+    );
+  }
+
+  insightMatchedTutors(reportId: string): Observable<InsightMatchedTutorCard[]> {
+    return this.http.get<ApiResponse<InsightMatchedTutorCard[]>>(`${this.baseUrl}/insight/reports/${reportId}/matched-tutors`).pipe(
+      map(response => response.data ?? []),
+    );
+  }
+
+  insightDashboardSummary(): Observable<InsightDashboardSummary> {
+    return this.get<InsightDashboardSummary>('/insight/dashboard-summary', {
+      selectedChild: null,
+      latestReportId: null,
+      latestAttemptId: null,
+      latestLearningScore: null,
+      actualLevel: null,
+      currentClass: null,
+      weakSubjects: [],
+      insightMessage: 'Start Tutorly Insight to understand the real learning level.',
+      nextActionLabel: 'Start Diagnostic Test',
+    });
+  }
+
+  insightProgressReports(): Observable<InsightProgressReport[]> {
+    return this.get<InsightProgressReport[]>('/insight/progress', []);
+  }
+
+  tutorInsightSummary(): Observable<TutorInsightSummary> {
+    return this.get<TutorInsightSummary>('/insight/tutor-summary', {
+      qualityScore: 0,
+      feedbackScore: null,
+      assignedInsightStudents: 0,
+      progressReportsPending: 0,
+      improvementTips: [],
+    });
+  }
+
+  adminInsightSummary(): Observable<AdminInsightSummary> {
+    return this.get<AdminInsightSummary>('/insight/admin-summary', {
+      totalDiagnosticAttempts: 0,
+      reportsGenerated: 0,
+      tutorsNeedingVerification: 0,
+      progressReportsPending: 0,
+      lowQualityTutors: 0,
+    });
   }
 
   private get<T>(path: string, fallback: T, params?: HttpParams): Observable<T> {
@@ -196,5 +311,29 @@ export class ApiService {
 
   private normalize(value?: string | null): string {
     return (value ?? '').trim().toLowerCase();
+  }
+
+  private defaultInsightSetup(): InsightDiagnosticSetup {
+    return {
+      children: [
+        {
+          childId: 'demo-child',
+          childName: 'Hamza',
+          currentClass: 5,
+          city: 'Karachi',
+          area: 'Gulshan-e-Iqbal',
+          preferredLearningMode: 'both',
+          boardCode: 'matric',
+        },
+      ],
+      classes: [1, 2, 3, 4, 5, 6, 7, 8],
+      subjects: ['math', 'english', 'urdu'],
+      topics: [
+        { subjectCode: 'math', subjectName: 'Math', topics: ['addition', 'subtraction', 'multiplication', 'division', 'fractions', 'word problems'] },
+        { subjectCode: 'english', subjectName: 'English', topics: ['reading comprehension', 'grammar', 'vocabulary', 'sentence structure'] },
+        { subjectCode: 'urdu', subjectName: 'Urdu', topics: ['reading', 'comprehension', 'grammar', 'vocabulary'] },
+      ],
+      questionCount: 0,
+    };
   }
 }

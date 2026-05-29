@@ -88,7 +88,7 @@ public sealed class AuthService : IAuthService
                 (
                     newid(), @UserId, lower(replace(@FullName, ' ', '-')), upper(left(@FullName, 1)),
                     '', 'pending', 0, 0, 0, 'PKR 0/month', 0, 'Set availability',
-                    'New tutor', 0, 'New verified tutor on Lumora.', '', '', sysutcdatetime()
+                    'New tutor', 0, 'New verified tutor on Mentora.', '', '', sysutcdatetime()
                 );
             end
 
@@ -96,12 +96,13 @@ public sealed class AuthService : IAuthService
             """;
 
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password, 12);
+        var registrationRole = request.Role.Equals("parent", StringComparison.OrdinalIgnoreCase) ? "student" : request.Role;
         using var connection = _connectionFactory.CreateConnection();
         var session = await connection.QuerySingleAsync<UserSession>(new CommandDefinition(
             sql,
             new
             {
-                request.Role,
+                Role = registrationRole,
                 request.FullName,
                 request.Phone,
                 request.Email,

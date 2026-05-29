@@ -18,19 +18,33 @@ public sealed class DashboardRepository : IDashboardRepository
 
     public async Task<StudentDashboard> GetStudentDashboardAsync(Guid userId, CancellationToken cancellationToken)
     {
+        const string learnerSql = """
+            select top 1 u.FullName, r.Code as Role
+            from users u
+            inner join userRoles ur on ur.UserId = u.Id
+            inner join roles r on r.Id = ur.RoleId
+            where u.Id = @UserId;
+            """;
+
+        using var connection = _connectionFactory.CreateConnection();
+        var learner = await connection.QuerySingleOrDefaultAsync<LearnerSession>(new CommandDefinition(
+            learnerSql,
+            new { UserId = userId },
+            cancellationToken: cancellationToken)) ?? new LearnerSession("Student", "student");
+        var firstName = learner.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? learner.FullName;
         var tutors = (await _tutorRepository.SearchAsync(new TutorSearchQuery(null, Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>(), null, null, "top-rated"), cancellationToken))
             .Take(2)
             .ToArray();
 
         return new StudentDashboard(
-            "Zara",
-            "As-salamu alaykum, Zara",
-            "You have 1 demo class today and 3 new tutor matches.",
+            firstName,
+            $"As-salamu alaykum, {firstName}",
+            "You have 1 demo class today and 3 new teacher matches.",
             new[]
             {
                 new StatCard("Active sessions", "3", "1 this week", "book", "success"),
                 new StatCard("Upcoming demos", "2", "Today, 6 PM", "calendar", "success"),
-                new StatCard("Saved tutors", "8", "2 new", "heart", "success"),
+                new StatCard("Saved teachers", "8", "2 new", "heart", "success"),
                 new StatCard("Avg progress", "+18%", "Last 30 days", "trending-up", "success")
             },
             tutors,
@@ -51,7 +65,7 @@ public sealed class DashboardRepository : IDashboardRepository
                 new ActivityItem("Booked demo with Ayesha M.", "1h ago", "cyan"),
                 new ActivityItem("Saved Hamza R. to favorites", "2h ago", "violet"),
                 new ActivityItem("Completed Physics session with Bilal A.", "3h ago", "success"),
-                new ActivityItem("AI matched 3 new tutors", "4h ago", "cyan")
+                new ActivityItem("AI matched 3 new teachers", "4h ago", "cyan")
             });
     }
 
@@ -108,4 +122,6 @@ public sealed class DashboardRepository : IDashboardRepository
             },
             new ResponseRate(96, "Avg reply: 12 min", "Top 5% tutors", "+4% this month"));
     }
+
+    private sealed record LearnerSession(string FullName, string Role);
 }

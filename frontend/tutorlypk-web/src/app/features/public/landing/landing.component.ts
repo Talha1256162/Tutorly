@@ -21,7 +21,7 @@ import { TutorCardComponent } from '../../../shared/components/tutor-card/tutor-
           <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.02] tracking-tight">
             Find the right tutor <br /><span class="text-gradient">before you waste</span> <br />another month.
           </h1>
-          <p class="mt-6 text-lg text-muted-foreground max-w-xl">Lumora helps Pakistani students and parents find verified tutors through AI matching, real reviews, transparent fees, and instant demo class booking.</p>
+          <p class="mt-6 text-lg text-muted-foreground max-w-xl">Mentora helps Pakistani students and parents find verified tutors through AI matching, real reviews, transparent fees, and instant demo class booking.</p>
 
           <div class="mt-8 glass-strong rounded-2xl p-3 shadow-card">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -157,11 +157,11 @@ import { TutorCardComponent } from '../../../shared/components/tutor-card/tutor-
 
     <section class="mx-auto max-w-7xl px-6 py-24 text-center">
       <div class="inline-flex glass rounded-full px-3 py-1 text-xs text-primary mb-4">+ DASHBOARDS</div>
-      <h2 class="font-display text-3xl sm:text-5xl font-bold tracking-tight max-w-3xl mx-auto">Designed for both sides of the classroom.</h2>
-      <p class="text-muted-foreground mt-4">Premium dashboards for students and tutors. Built for clarity, not chaos.</p>
+      <h2 class="font-display text-3xl sm:text-5xl font-bold tracking-tight max-w-3xl mx-auto">Two experiences, clearly separated.</h2>
+      <p class="text-muted-foreground mt-4">Students and parents share the learner workspace. Teachers manage their work through a separate portal.</p>
       <div class="grid md:grid-cols-2 gap-6 mt-12 text-left">
-        <div class="glass-strong rounded-3xl p-7 shadow-card"><h3 class="font-display text-xl font-semibold mb-5">Student Dashboard</h3>@for (item of ['Saved tutors','Upcoming demo classes','Active sessions','Learning progress','Chat']; track item) {<div class="flex items-center gap-2 mb-2"><span class="h-4 w-4 rounded-full bg-success/20 text-success grid place-items-center text-xs">✓</span>{{ item }}</div>}<a routerLink="/dashboard" class="inline-flex items-center gap-2 rounded-xl bg-primary-gradient px-5 py-3 font-semibold text-primary-foreground shadow-glow mt-5">View Student Dashboard <app-icon name="arrow-right" className="h-4 w-4" /></a></div>
-        <div class="glass-strong rounded-3xl p-7 shadow-card"><h3 class="font-display text-xl font-semibold mb-5">Tutor Dashboard</h3>@for (item of ['Student requests','Demo bookings','Earnings','Availability calendar','Profile strength','Reviews']; track item) {<div class="flex items-center gap-2 mb-2"><span class="h-4 w-4 rounded-full bg-success/20 text-success grid place-items-center text-xs">✓</span>{{ item }}</div>}<a routerLink="/tutor-dashboard" class="inline-flex items-center gap-2 rounded-xl bg-primary-gradient px-5 py-3 font-semibold text-primary-foreground shadow-glow mt-5">View Tutor Dashboard <app-icon name="arrow-right" className="h-4 w-4" /></a></div>
+        <div class="glass-strong rounded-3xl p-7 shadow-card"><h3 class="font-display text-xl font-semibold mb-5">Student / Parent Workspace</h3>@for (item of ['Teacher matches','Demo classes','Learning progress','Secure messages','Saved teachers']; track item) {<div class="flex items-center gap-2 mb-2"><span class="h-4 w-4 rounded-full bg-success/20 text-success grid place-items-center text-xs">+</span>{{ item }}</div>}<a routerLink="/role" class="inline-flex items-center gap-2 rounded-xl bg-primary-gradient px-5 py-3 font-semibold text-primary-foreground shadow-glow mt-5">Continue as Student / Parent <app-icon name="arrow-right" className="h-4 w-4" /></a></div>
+        <div class="glass-strong rounded-3xl p-7 shadow-card"><h3 class="font-display text-xl font-semibold mb-5">Teacher Portal</h3>@for (item of ['Student requests','Demo bookings','Earnings','Availability calendar','Profile strength','Reviews']; track item) {<div class="flex items-center gap-2 mb-2"><span class="h-4 w-4 rounded-full bg-success/20 text-success grid place-items-center text-xs">+</span>{{ item }}</div>}<a routerLink="/role" class="inline-flex items-center gap-2 rounded-xl border border-white/10 px-5 py-3 font-semibold mt-5">Continue as Teacher <app-icon name="arrow-right" className="h-4 w-4" /></a></div>
       </div>
     </section>
 
@@ -225,7 +225,7 @@ export class LandingComponent implements OnInit {
     { icon: 'calendar', title: 'Demo class before paying', body: 'Try first. Decide later.' },
     { icon: 'wallet', title: 'Transparent pricing', body: 'No haggling, no surprises' },
     { icon: 'star', title: 'Real parent reviews', body: 'Anonymous, moderated' },
-    { icon: 'message-circle', title: 'Secure chat', body: 'All conversations on Lumora' },
+    { icon: 'message-circle', title: 'Secure chat', body: 'All conversations on Mentora' },
     { icon: 'shield-check', title: 'Identity verification', body: 'CNIC + selfie + reference' },
     { icon: 'trending-up', title: 'Rating system', body: 'Live performance scores' },
     { icon: 'clock', title: 'Response time tracking', body: 'We measure every reply' },
@@ -236,9 +236,9 @@ export class LandingComponent implements OnInit {
     { no: '03', title: 'Book a demo class', body: 'Try a free 30-min session. Pay only when convinced.' },
   ];
   stories = [
-    { name: 'Asma Tariq', role: 'Parent of A Level student', city: 'Lahore', quote: "We tried 4 tutors before Lumora. The AI match nailed it on the first try. Bilal has been a blessing for my son's physics." },
+    { name: 'Asma Tariq', role: 'Parent of A Level student', city: 'Lahore', quote: "We tried 4 tutors before Mentora. The AI match nailed it on the first try. Bilal has been a blessing for my son's physics." },
     { name: 'Hassan, 17', role: 'A Level Student', city: 'Karachi', quote: 'The demo class let me actually test the tutor before paying. Sir Hamza explained chemistry in 20 minutes better than 2 years at my academy.' },
-    { name: 'Ayesha Malik', role: 'Verified Tutor', city: 'Lahore', quote: 'I went from juggling WhatsApp groups to a full schedule of serious students in 6 weeks. Lumora respects tutors.' },
+    { name: 'Ayesha Malik', role: 'Verified Tutor', city: 'Lahore', quote: 'I went from juggling WhatsApp groups to a full schedule of serious students in 6 weeks. Mentora respects tutors.' },
   ];
 
   constructor(private readonly api: ApiService, private readonly cdr: ChangeDetectorRef) {}

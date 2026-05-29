@@ -4,6 +4,7 @@ using Tutorly.Application;
 using Tutorly.Infrastructure.Data;
 using Tutorly.Infrastructure.Repositories;
 using Tutorly.Infrastructure.Security;
+using Tutorly.Infrastructure.Services;
 
 namespace Tutorly.Infrastructure;
 
@@ -20,6 +21,8 @@ public static class DependencyInjection
         services.AddScoped<IDashboardRepository, DashboardRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ITutorlyInsightRepository, TutorlyInsightRepository>();
+        services.AddScoped<ITutorlyInsightService, TutorlyInsightService>();
         return services;
     }
 }

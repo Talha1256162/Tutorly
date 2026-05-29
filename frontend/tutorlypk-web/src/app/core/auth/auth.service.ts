@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable, tap, throwError } from 'rxjs';
 import { ApiResponse, AuthResult, AuthUser, LoginRequest, RegisterRequest } from '../models/api.models';
 
 @Injectable({ providedIn: 'root' })
@@ -17,6 +17,10 @@ export class AuthService {
     return localStorage.getItem(this.tokenKey);
   }
 
+  get refreshToken(): string | null {
+    return localStorage.getItem(this.refreshTokenKey);
+  }
+
   get currentUser(): AuthUser | null {
     const value = localStorage.getItem(this.userKey);
     return value ? JSON.parse(value) as AuthUser : null;
@@ -31,6 +35,18 @@ export class AuthService {
 
   register(request: RegisterRequest): Observable<AuthResult> {
     return this.http.post<ApiResponse<AuthResult>>(`${this.baseUrl}/register`, request).pipe(
+      map(response => response.data),
+      tap(result => this.setSession(result)),
+    );
+  }
+
+  refresh(): Observable<AuthResult> {
+    const refreshToken = this.refreshToken;
+    if (!refreshToken) {
+      return throwError(() => new Error('Refresh token is unavailable.'));
+    }
+
+    return this.http.post<ApiResponse<AuthResult>>(`${this.baseUrl}/refresh`, { refreshToken }).pipe(
       map(response => response.data),
       tap(result => this.setSession(result)),
     );
@@ -59,7 +75,6 @@ export class AuthService {
     }
 
     if (Date.parse(expiresAt) <= Date.now()) {
-      this.clearSession();
       return false;
     }
 

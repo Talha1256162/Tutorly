@@ -212,3 +212,178 @@ export interface MessageItem {
   time: string;
   isMine: boolean;
 }
+
+export interface InsightChildProfile {
+  childId: string;
+  childName: string;
+  currentClass: number;
+  city: string;
+  area?: string | null;
+  preferredLearningMode: string;
+  boardCode?: string | null;
+}
+
+export interface InsightDiagnosticSetup {
+  children: InsightChildProfile[];
+  classes: number[];
+  subjects: string[];
+  topics: InsightTopicGroup[];
+  questionCount: number;
+}
+
+export interface InsightTopicGroup {
+  subjectCode: string;
+  subjectName: string;
+  topics: string[];
+}
+
+export interface StartInsightDiagnosticAttemptRequest {
+  childId: string;
+  currentClass: number;
+  subjects: string[];
+}
+
+export interface StartInsightDiagnosticAttemptResponse {
+  attemptId: string;
+  status: string;
+  questionCount: number;
+  questions: InsightDiagnosticQuestion[];
+}
+
+export interface InsightDiagnosticQuestion {
+  id: string;
+  subjectCode: string;
+  subjectName: string;
+  classLevel: number;
+  topicCode: string;
+  topicName: string;
+  difficulty: string;
+  questionText: string;
+  marks: number;
+  options: InsightDiagnosticOption[];
+}
+
+export interface InsightDiagnosticOption {
+  id: string;
+  optionCode: string;
+  optionText: string;
+}
+
+export interface SubmitInsightAnswerResponse {
+  attemptId: string;
+  questionId: string;
+  isCorrect: boolean;
+  marksAwarded: number;
+}
+
+export interface CompleteInsightAttemptResponse {
+  attemptId: string;
+  reportId: string;
+  report: InsightLearningGapReport;
+}
+
+export interface InsightLearningGapReport {
+  reportId: string;
+  childId: string;
+  diagnosticAttemptId: string;
+  childName: string;
+  currentClass: number;
+  estimatedActualLevel: number;
+  overallLearningScore: number;
+  subjectScores: InsightSubjectScore[];
+  weakTopics: InsightTopicScore[];
+  strongTopics: InsightTopicScore[];
+  recommendedTutorType: string;
+  thirtyDayPlan: string;
+  parentExplanation: string;
+  createdAtUtc: string;
+}
+
+export interface InsightSubjectScore {
+  subjectCode: string;
+  subjectName: string;
+  score: number;
+  estimatedLevel: number;
+}
+
+export interface InsightTopicScore {
+  subjectCode: string;
+  topicCode: string;
+  topicName: string;
+  strengthCode: string;
+  score: number;
+}
+
+export interface InsightMatchedTutorCard {
+  tutorId: string;
+  name: string;
+  photoUrl: string;
+  initials: string;
+  subjects: string[];
+  city: string;
+  area?: string | null;
+  experienceYears: number;
+  verified: boolean;
+  isCnicVerified: boolean;
+  isQualificationVerified: boolean;
+  tutorQualityScore: number;
+  averageStudentImprovementPercent?: number | null;
+  complaintRate?: number | null;
+  bestForClassRange: string;
+  trialClassAvailable: boolean;
+  estimatedFee?: string | null;
+  matchScore: number;
+  matchReason: string;
+}
+
+export interface InsightDashboardSummary {
+  selectedChild?: InsightChildProfile | null;
+  latestReportId?: string | null;
+  latestAttemptId?: string | null;
+  latestLearningScore?: number | null;
+  actualLevel?: number | null;
+  currentClass?: number | null;
+  weakSubjects: string[];
+  insightMessage: string;
+  nextActionLabel: string;
+}
+
+export interface InsightProgressReport {
+  id: string;
+  childId: string;
+  childName: string;
+  tutorName: string;
+  reportMonth: string;
+  beforeScore: number;
+  afterScore: number;
+  subjects: InsightProgressSubject[];
+  completedTopics: string[];
+  stillWeakTopics: string[];
+  tutorAttendanceCount: number;
+  parentFeedback?: string | null;
+  recommendation: string;
+}
+
+export interface InsightProgressSubject {
+  subjectCode: string;
+  subjectName: string;
+  beforeScore: number;
+  afterScore: number;
+  improvementPercent: number;
+}
+
+export interface TutorInsightSummary {
+  qualityScore: number;
+  feedbackScore?: number | null;
+  assignedInsightStudents: number;
+  progressReportsPending: number;
+  improvementTips: string[];
+}
+
+export interface AdminInsightSummary {
+  totalDiagnosticAttempts: number;
+  reportsGenerated: number;
+  tutorsNeedingVerification: number;
+  progressReportsPending: number;
+  lowQualityTutors: number;
+}

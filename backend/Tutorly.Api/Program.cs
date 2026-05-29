@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
+using Tutorly.Api.Hubs;
 using Tutorly.Api.Middleware;
 using Tutorly.Infrastructure;
 using Tutorly.Infrastructure.Security;
@@ -19,6 +20,7 @@ builder.Host.UseSerilog((context, services, configuration) =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -37,6 +39,20 @@ builder.Services
             ValidAudience = jwt.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SigningKey)),
             ClockSkew = TimeSpan.FromMinutes(1)
+        };
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"].ToString();
+                if (!string.IsNullOrWhiteSpace(accessToken)
+                    && context.HttpContext.Request.Path.StartsWithSegments("/hubs/chat"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
         };
     });
 
@@ -59,7 +75,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "Tutorly API",
         Version = "v1",
-        Description = "Production API for Lumora/Tutorly tutor marketplace."
+        Description = "Production API for Mentora/Tutorly tutor marketplace."
     });
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -98,5 +114,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapGet("/health", () => Results.Ok(new { status = "Healthy", service = "Tutorly.Api" }));
 app.MapControllers();
+app.MapHub<ChatHub>("/hubs/chat");
 
 app.Run();

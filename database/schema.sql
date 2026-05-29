@@ -271,5 +271,6 @@ create index IX_users_Status on users(StatusCode);
 create index IX_tutorProfiles_Search on tutorProfiles(VerificationStatusCode, Rating desc, FeeAmount);
 create index IX_demoBookings_Tutor_Date on demoBookings(TutorProfileId, BookingDate);
 create index IX_demoBookings_Student_Date on demoBookings(StudentUserId, BookingDate);
+create unique index UX_conversations_Student_Tutor on conversations(StudentUserId, TutorProfileId);
 create index IX_messages_Conversation_Created on messages(ConversationId, CreatedAtUtc);
 create index IX_auditLogs_Entity on auditLogs(EntityName, EntityId, CreatedAtUtc);

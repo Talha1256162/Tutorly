@@ -1,4 +1,4 @@
-# Tutorly / Lumora UI Reference
+# Tutorly / Mentora UI Reference
 
 Reference inspected: https://tutorlypk.lovable.app/
 
@@ -24,7 +24,7 @@ Screenshots are stored in `docs/reference/`:
 
 ## Brand and Layout Notes
 
-- The visible brand name is `Lumora`.
+- The visible brand name is `Mentora`.
 - The visual style is a dark premium AI marketplace, built around glass panels, deep navy surfaces, cyan/violet gradients, and rounded card geometry.
 - Desktop layout uses a centered max-width shell around 1280px.
 - Main public pages use a fixed glass navbar, large vertical spacing, and a dark background with subtle radial aurora gradients.

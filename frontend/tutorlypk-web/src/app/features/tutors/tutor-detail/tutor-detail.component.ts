@@ -83,11 +83,11 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
                 }
               </div>
               <a [routerLink]="['/book', profile.summary.id]" class="mt-6 w-full inline-flex justify-center rounded-xl bg-primary-gradient px-5 py-3 font-semibold text-primary-foreground shadow-glow">Book Demo</a>
-              <a routerLink="/messages" class="mt-3 w-full inline-flex justify-center rounded-xl border border-white/10 bg-white/5 px-5 py-3 font-semibold hover:bg-white/10">Message Tutor</a>
+              <a routerLink="/messages" [queryParams]="{ tutor: profile.summary.id }" class="mt-3 w-full inline-flex justify-center rounded-xl border border-white/10 bg-white/5 px-5 py-3 font-semibold hover:bg-white/10">Message Tutor</a>
             </div>
             <div class="glass-strong rounded-3xl p-6 shadow-card space-y-3 text-sm">
               <div class="flex items-center gap-2"><app-icon name="shield-check" className="h-4 w-4 text-success" /> Verified tutor with CNIC check</div>
-              <div class="flex items-center gap-2"><app-icon name="message-circle" className="h-4 w-4 text-success" /> Secure Lumora messaging</div>
+              <div class="flex items-center gap-2"><app-icon name="message-circle" className="h-4 w-4 text-success" /> Secure Mentora messaging</div>
               <div class="flex items-center gap-2"><app-icon name="wallet" className="h-4 w-4 text-success" /> No payment until you commit</div>
             </div>
           </aside>

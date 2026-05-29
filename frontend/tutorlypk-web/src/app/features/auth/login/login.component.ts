@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { IconComponent } from '../../../shared/components/icon/icon.component';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -15,23 +15,23 @@ import { AuthService } from '../../../core/auth/auth.service';
         <div class="absolute inset-0 noise"></div>
         <a routerLink="/" class="relative flex items-center gap-3">
           <div class="h-10 w-10 rounded-full bg-primary-gradient grid place-items-center"><app-icon name="sparkles" className="h-5 w-5 text-primary-foreground" /></div>
-          <span class="font-display font-bold text-2xl">Lumora</span>
+          <span class="font-display font-bold text-2xl">Mentora</span>
         </a>
         <div class="relative max-w-lg">
-          <h1 class="font-display text-5xl font-bold leading-tight">"Lumora replaced 8 weeks of WhatsApp pain with one perfect tutor."</h1>
+          <h1 class="font-display text-5xl font-bold leading-tight">"Mentora replaced 8 weeks of WhatsApp pain with one perfect tutor."</h1>
           <div class="flex items-center gap-4 mt-8">
             <div class="h-12 w-12 rounded-full bg-aurora"></div>
             <div><div class="font-semibold">Asma T.</div><div class="text-sm text-muted-foreground">Parent · Lahore</div></div>
           </div>
         </div>
-        <div class="relative text-sm text-muted-foreground">© 2026 Lumora · Pakistan</div>
+        <div class="relative text-sm text-muted-foreground">© 2026 Mentora · Pakistan</div>
       </section>
 
       <section class="grid place-items-center px-6">
         <div class="w-full max-w-md">
           <a routerLink="/" class="lg:hidden flex items-center gap-3 mb-12">
             <div class="h-10 w-10 rounded-full bg-primary-gradient grid place-items-center"><app-icon name="sparkles" className="h-5 w-5 text-primary-foreground" /></div>
-            <span class="font-display font-bold text-2xl">Lumora</span>
+            <span class="font-display font-bold text-2xl">Mentora</span>
           </a>
           <h1 class="font-display text-4xl font-bold">Welcome back</h1>
           <p class="text-muted-foreground mt-2">Sign in to continue your learning journey.</p>
@@ -55,7 +55,7 @@ import { AuthService } from '../../../core/auth/auth.service';
           </form>
           <div class="my-6 flex items-center gap-4 text-xs text-muted-foreground"><div class="h-px flex-1 bg-white/10"></div>OR<div class="h-px flex-1 bg-white/10"></div></div>
           <button class="w-full rounded-3xl border border-white/10 bg-white/5 px-5 py-4 font-semibold">Continue with Google</button>
-          <div class="text-center text-muted-foreground mt-8">New to Lumora? <a routerLink="/role" class="text-primary font-semibold">Create account</a></div>
+          <div class="text-center text-muted-foreground mt-8">New to Mentora? <a routerLink="/role" class="text-primary font-semibold">Create account</a></div>
         </div>
       </section>
     </main>
@@ -71,6 +71,7 @@ export class LoginComponent {
 
   constructor(
     private readonly authService: AuthService,
+    private readonly route: ActivatedRoute,
     private readonly router: Router,
   ) {}
 
@@ -80,7 +81,10 @@ export class LoginComponent {
 
     this.authService.login(this.form).subscribe({
       next: result => {
-        const target = result.user.role === 'tutor' ? '/tutor-dashboard' : '/dashboard';
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        const target = returnUrl?.startsWith('/')
+          ? returnUrl
+          : result.user.role === 'tutor' ? '/tutor-dashboard' : '/dashboard';
         this.router.navigateByUrl(target);
       },
       error: () => {

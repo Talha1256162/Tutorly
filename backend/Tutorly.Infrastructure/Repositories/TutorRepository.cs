@@ -63,6 +63,7 @@ public sealed class TutorRepository : ITutorRepository
             left join fileUploads f on f.Id = tp.PhotoFileId
             where u.StatusCode = 'active'
               and (@Search is null
+                   or tp.Slug = @Search
                    or u.FullName like '%' + @Search + '%'
                    or tp.Tagline like '%' + @Search + '%'
                    or city.Name like '%' + @Search + '%'

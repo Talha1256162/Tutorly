@@ -235,7 +235,7 @@ export function profileFor(id: string): TutorProfile {
     about: 'LUMS graduate with years of tutoring O/A Levels. Specializing in turning anxiety into grades through structured frameworks.',
     teachingStyle: 'Quick diagnosis, worked examples, guided practice, and a clear recap after each class.',
     education: ['BSc Mathematics, LUMS', 'Cambridge CIE Certified'],
-    achievements: ['95% of students improved by 2+ grades', 'Top 1% on Lumora 2024'],
+    achievements: ['95% of students improved by 2+ grades', 'Top 1% on Mentora 2024'],
     availability: ['Mon 6 PM', 'Wed 6 PM', 'Sat 3 PM'],
     reviews: [
       { reviewerName: 'Amna K.', context: 'Parent', rating: 5, quote: "Best math teacher we've ever hired.", createdAt: new Date().toISOString() },

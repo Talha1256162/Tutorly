@@ -28,6 +28,10 @@ public sealed class GlobalExceptionMiddleware
         {
             await WriteErrorAsync(context, HttpStatusCode.NotFound, exception.Message);
         }
+        catch (ArgumentException exception)
+        {
+            await WriteErrorAsync(context, HttpStatusCode.BadRequest, exception.Message);
+        }
         catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
         {
             if (!context.Response.HasStarted)

@@ -132,6 +132,8 @@ public sealed record Conversation(
 
 public sealed record MessageItem(string Id, string Sender, string Body, string Time, bool IsMine);
 
+public sealed record SendMessageRequest(string Body);
+
 public sealed record AuthResult(
     string AccessToken,
     string RefreshToken,

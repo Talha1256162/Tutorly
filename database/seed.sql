@@ -78,6 +78,7 @@ values
 ('featuredTutorRules', '{"minRating":4.7,"verifiedOnly":true}', 'json', 'Featured tutor eligibility.');
 
 declare @studentUser uniqueidentifier = '11111111-1111-1111-1111-111111111111';
+declare @parentUser uniqueidentifier = '12121212-1212-1212-1212-121212121212';
 declare @tutorA uniqueidentifier = '22222222-2222-2222-2222-222222222222';
 declare @tutorB uniqueidentifier = '33333333-3333-3333-3333-333333333333';
 declare @tutorC uniqueidentifier = '44444444-4444-4444-4444-444444444444';
@@ -89,6 +90,7 @@ declare @password nvarchar(300) = '$2a$12$8R62e45qkmue8cjkjCyU8eb4iP21G8ttdwKEdy
 insert into users (Id, FullName, Phone, Email, PasswordHash, StatusCode)
 values
 (@studentUser, 'Zara Ahmed', '+923001111111', 'zara@example.com', @password, 'active'),
+(@parentUser, 'Sara Ahmed', '+923001212121', 'parent@example.com', @password, 'active'),
 (@tutorA, 'Ayesha Malik', '+923002222222', 'ayesha@example.com', @password, 'active'),
 (@tutorB, 'Hamza Raza', '+923003333333', 'hamza@example.com', @password, 'active'),
 (@tutorC, 'Fatima Shah', '+923004444444', 'fatima@example.com', @password, 'active'),
@@ -98,6 +100,8 @@ values
 
 insert into userRoles (UserId, RoleId)
 select @studentUser, Id from roles where Code = 'student';
+insert into userRoles (UserId, RoleId)
+select @parentUser, Id from roles where Code = 'student';
 insert into userRoles (UserId, RoleId)
 select @tutorA, Id from roles where Code = 'tutor';
 insert into userRoles (UserId, RoleId)
@@ -112,7 +116,9 @@ insert into userRoles (UserId, RoleId)
 select @tutorF, Id from roles where Code = 'tutor';
 
 insert into studentProfiles (Id, UserId, City, PreferredLearningModeCode)
-values (newid(), @studentUser, 'Lahore', 'online');
+values
+(newid(), @studentUser, 'Lahore', 'online'),
+(newid(), @parentUser, 'Lahore', 'online');
 
 declare @lahore int = (select Id from lookupValues where Code = 'lahore');
 declare @karachi int = (select Id from lookupValues where Code = 'karachi');
@@ -133,8 +139,8 @@ declare @tpF uniqueidentifier = newid();
 insert into tutorProfiles
 (Id, UserId, Slug, Initials, PhotoUrl, VerificationStatusCode, Rating, ReviewCount, CityLookupValueId, TeachingModeLookupValueId, GenderLookupValueId, ExperienceYears, FeeText, FeeAmount, NextSlot, ResponseTime, StudentsTaught, MatchPercentage, MatchReason, Tagline, About, TeachingStyle, Education, Achievements, Availability)
 values
-(@tpA, @tutorA, 'ayesha-malik', 'AM', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80', 'verified', 4.9, 184, @lahore, @both, @female, 8, 'PKR 18,000/month', 18000, 'Today, 6:00 PM', 'Replies in 12 min', 240, 98, 'Perfect fit for A Levels Math & Physics in Lahore', 'Cambridge A* in Math. I make hard problems feel obvious.', 'LUMS graduate with 8 years tutoring O/A Levels. Specializing in turning math anxiety into A grades through structured frameworks.', 'Structured examples, fast diagnosis, then guided practice.', 'BSc Mathematics, LUMS|Cambridge CIE Certified', '95% of students improved by 2+ grades|Top 1% on Lumora 2024', 'Mon 6 PM|Wed 6 PM|Sat 3 PM'),
-(@tpB, @tutorB, 'hamza-raza', 'HR', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80', 'verified', 4.8, 126, @karachi, @online, @male, 6, 'PKR 2,500/hour', 20000, 'Tomorrow, 4:30 PM', 'Replies in 20 min', 180, 95, 'MDCAT specialist, 92% admit rate', 'MDCAT Chemistry - frameworks not memorization.', 'AKU medical student turned tutor. I built the prep system I wish I had.', 'Concept maps first, then timed MCQ drills.', 'MBBS, Aga Khan University|MDCAT 2018 - 198/210', '92% MDCAT admit rate|Author of LumoraNotes', 'Tue 4:30 PM|Thu 7 PM|Sun 5 PM'),
+(@tpA, @tutorA, 'ayesha-malik', 'AM', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80', 'verified', 4.9, 184, @lahore, @both, @female, 8, 'PKR 18,000/month', 18000, 'Today, 6:00 PM', 'Replies in 12 min', 240, 98, 'Perfect fit for A Levels Math & Physics in Lahore', 'Cambridge A* in Math. I make hard problems feel obvious.', 'LUMS graduate with 8 years tutoring O/A Levels. Specializing in turning math anxiety into A grades through structured frameworks.', 'Structured examples, fast diagnosis, then guided practice.', 'BSc Mathematics, LUMS|Cambridge CIE Certified', '95% of students improved by 2+ grades|Top 1% on Mentora 2024', 'Mon 6 PM|Wed 6 PM|Sat 3 PM'),
+(@tpB, @tutorB, 'hamza-raza', 'HR', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2?auto=format&fit=crop&w=400&q=80', 'verified', 4.8, 126, @karachi, @online, @male, 6, 'PKR 2,500/hour', 20000, 'Tomorrow, 4:30 PM', 'Replies in 20 min', 180, 95, 'MDCAT specialist, 92% admit rate', 'MDCAT Chemistry - frameworks not memorization.', 'AKU medical student turned tutor. I built the prep system I wish I had.', 'Concept maps first, then timed MCQ drills.', 'MBBS, Aga Khan University|MDCAT 2018 - 198/210', '92% MDCAT admit rate|Author of MentoraNotes', 'Tue 4:30 PM|Thu 7 PM|Sun 5 PM'),
 (@tpC, @tutorC, 'fatima-shah', 'FS', 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80', 'verified', 5.0, 92, @islamabad, @both, @female, 5, 'PKR 12,000/month', 12000, 'Today, 8:00 PM', 'Replies in 8 min', 140, 93, 'IELTS 8.5 - band 7+ guarantee', 'IELTS Band 8.5. I get you to 7+ in 6 weeks.', 'Former British Council examiner. Honest, structured, results-driven.', 'Writing feedback, speaking drills, and band-score rubrics.', 'MA English Lit, QAU|Cambridge CELTA', 'Avg student gain: 1.5 bands|150+ IELTS success stories', 'Mon 8 PM|Fri 8 PM|Sun 2 PM'),
 (@tpD, @tutorD, 'umar-khan', 'UK', 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80', 'verified', 4.7, 78, @lahore, @online, @male, 4, 'PKR 2,500/hour', 22000, 'Tomorrow, 7:00 PM', 'Replies in 15 min', 95, null, null, 'Ex-FAST. Code, calculus, and confidence.', 'FAST graduate helping students connect programming, calculus, and exam confidence.', 'Short examples, live coding, and practice sets after every session.', 'BS Computer Science, FAST|Teaching assistant for calculus', 'Built 40+ student portfolios|Top computer science tutor', 'Tue 7 PM|Thu 7 PM|Sat 5 PM'),
 (@tpE, @tutorE, 'sana-iqbal', 'SI', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&q=80', 'verified', 4.9, 210, @karachi, @both, @female, 10, 'PKR 8,000/month', 8000, 'Today, 5:00 PM', 'Replies in 5 min', 320, null, null, 'Tajweed, tarjuma, and tafseer with love.', 'A patient Quran and Islamiat tutor focused on tajweed, understanding, and consistency.', 'Gentle correction, daily recitation goals, and parent updates.', 'Alimah Program Graduate|Quran memorization certified', '320+ students taught|Parent favorite tutor', 'Mon 5 PM|Wed 5 PM|Sun 10 AM'),
@@ -180,3 +186,13 @@ values
 (newid(), @tpA, @studentUser, convert(date, dateadd(day, 1, getdate())), '6:00 PM', 'Online', 'Zara Ahmed', '+923001111111', 'Focus on A Levels mechanics and exam timing.', 'confirmed', @studentUser),
 (newid(), @tpC, @studentUser, convert(date, dateadd(day, 2, getdate())), '8:00 PM', 'Online', 'Zara Ahmed', '+923001111111', 'IELTS writing band improvement.', 'pending', @studentUser),
 (newid(), @tpF, @studentUser, convert(date, dateadd(day, 5, getdate())), '6:30 PM', 'Home', 'Zara Ahmed', '+923001111111', 'Physics numericals and confidence building.', 'confirmed', @studentUser);
+
+declare @conversationA uniqueidentifier = '88888888-8888-8888-8888-888888888888';
+
+insert into conversations (Id, StudentUserId, TutorProfileId)
+values (@conversationA, @studentUser, @tpA);
+
+insert into messages (Id, ConversationId, SenderUserId, Body, CreatedAtUtc)
+values
+('99999999-9999-9999-9999-999999999991', @conversationA, @studentUser, 'Assalam-o-alaikum, can we focus on projectile motion in the demo class?', dateadd(minute, -12, sysutcdatetime())),
+('99999999-9999-9999-9999-999999999992', @conversationA, @tutorA, 'Walaikum salam. Yes, I will prepare worked examples and a past-paper question for you.', dateadd(minute, -8, sysutcdatetime()));
