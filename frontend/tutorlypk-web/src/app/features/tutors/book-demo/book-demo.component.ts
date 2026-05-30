@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { BookingOption } from '../../../core/models/api.models';
 import { IconComponent } from '../../../shared/components/icon/icon.component';
+import { initialsFromName, isReliableImageUrl } from '../../../shared/image-utils';
 
 @Component({
   selector: 'app-book-demo',
@@ -74,7 +75,11 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
           <aside class="lg:sticky lg:top-28 space-y-5">
             <section class="glass-strong rounded-3xl p-7 shadow-card">
               <div class="flex items-center gap-4 mb-6">
-                <img [src]="options.tutorPhotoUrl" [alt]="options.tutorName" class="h-16 w-16 rounded-2xl object-cover" />
+                @if (showTutorImage) {
+                  <img [src]="options.tutorPhotoUrl" [alt]="options.tutorName" class="h-16 w-16 rounded-2xl object-cover" />
+                } @else {
+                  <div class="premium-avatar-fallback h-16 w-16 rounded-2xl">{{ tutorInitials }}</div>
+                }
                 <div><div class="font-display text-xl font-bold">{{ options.tutorName }}</div><div class="text-sm text-muted-foreground">{{ options.subjects.join(', ') }}</div></div>
               </div>
               <div class="space-y-4 text-sm">
@@ -126,6 +131,14 @@ export class BookDemoComponent implements OnInit {
   get selectedDateLabel(): string {
     const date = this.options?.dates.find(item => item.isoDate === this.selectedDate);
     return date ? `${date.label} ${date.day}` : 'Select date';
+  }
+
+  get showTutorImage(): boolean {
+    return isReliableImageUrl(this.options?.tutorPhotoUrl);
+  }
+
+  get tutorInitials(): string {
+    return initialsFromName(this.options?.tutorName);
   }
 
   ngOnInit(): void {

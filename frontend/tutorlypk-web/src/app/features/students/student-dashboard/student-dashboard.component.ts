@@ -6,6 +6,7 @@ import { StudentDashboard } from '../../../core/models/api.models';
 import { IconComponent } from '../../../shared/components/icon/icon.component';
 import { StatsCardComponent } from '../../../shared/components/stats-card/stats-card.component';
 import { TutorCardComponent } from '../../../shared/components/tutor-card/tutor-card.component';
+import { initialsFromName, isReliableImageUrl } from '../../../shared/image-utils';
 
 @Component({
   selector: 'app-student-dashboard',
@@ -63,13 +64,27 @@ import { TutorCardComponent } from '../../../shared/components/tutor-card/tutor-
             <section class="glass-strong rounded-3xl p-7 shadow-card">
               <h2 class="font-display text-xl font-semibold mb-5">{{ demoLabel }}</h2>
               @for (demo of dashboard.upcomingDemos; track demo.tutorName) {
-                <div class="glass rounded-3xl p-4 flex items-center gap-4 mb-4"><img [src]="demo.tutorPhotoUrl" class="h-12 w-12 rounded-2xl object-cover" /><div class="flex-1"><div class="font-semibold">{{ demo.tutorName }}</div><div class="text-sm text-muted-foreground">{{ demo.subject }} - {{ demo.startsAt }}</div></div><button class="premium-btn premium-btn--primary premium-btn--compact">{{ demo.actionLabel }}</button></div>
+                <div class="glass rounded-3xl p-4 flex items-center gap-4 mb-4">
+                  @if (hasReliableImage(demo.tutorPhotoUrl)) {
+                    <img [src]="demo.tutorPhotoUrl" [alt]="demo.tutorName" class="h-12 w-12 rounded-2xl object-cover" />
+                  } @else {
+                    <div class="premium-avatar-fallback h-12 w-12 rounded-2xl text-sm">{{ initials(demo.tutorName) }}</div>
+                  }
+                  <div class="flex-1"><div class="font-semibold">{{ demo.tutorName }}</div><div class="text-sm text-muted-foreground">{{ demo.subject }} - {{ demo.startsAt }}</div></div><button class="premium-btn premium-btn--primary premium-btn--compact">{{ demo.actionLabel }}</button>
+                </div>
               }
             </section>
             <section class="glass-strong rounded-3xl p-7 shadow-card">
               <div class="flex justify-between mb-5"><h2 class="font-display text-xl font-semibold">{{ messageLabel }}</h2><a routerLink="/messages" class="text-sm text-muted-foreground">Open inbox</a></div>
               @for (message of dashboard.messages; track message.personName) {
-                <div class="flex items-center gap-4 mb-4"><img [src]="message.photoUrl" class="h-10 w-10 rounded-full object-cover" /><div class="flex-1"><div class="font-semibold">{{ message.personName }}</div><div class="text-sm text-muted-foreground">{{ message.preview }}</div></div><app-icon name="clock" className="h-4 w-4 text-muted-foreground" /></div>
+                <div class="flex items-center gap-4 mb-4">
+                  @if (hasReliableImage(message.photoUrl)) {
+                    <img [src]="message.photoUrl" [alt]="message.personName" class="h-10 w-10 rounded-full object-cover" />
+                  } @else {
+                    <div class="premium-avatar-fallback h-10 w-10 rounded-full text-xs">{{ initials(message.personName) }}</div>
+                  }
+                  <div class="flex-1"><div class="font-semibold">{{ message.personName }}</div><div class="text-sm text-muted-foreground">{{ message.preview }}</div></div><app-icon name="clock" className="h-4 w-4 text-muted-foreground" />
+                </div>
               }
             </section>
             <section class="glass-strong rounded-3xl p-7 shadow-card">
@@ -127,5 +142,13 @@ export class StudentDashboardComponent implements OnInit {
       };
       this.cdr.detectChanges();
     });
+  }
+
+  hasReliableImage(url: string): boolean {
+    return isReliableImageUrl(url);
+  }
+
+  initials(name: string): string {
+    return initialsFromName(name);
   }
 }

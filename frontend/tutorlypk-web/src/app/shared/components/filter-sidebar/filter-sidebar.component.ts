@@ -53,7 +53,7 @@ type MultiFilterKey = 'subjects' | 'classLevels' | 'cities' | 'modes' | 'genders
               Use
             </label>
           </div>
-          <input type="range" min="5000" max="30000" step="1000" [(ngModel)]="maxFee" (ngModelChange)="enableBudget()" class="w-full" />
+          <input type="range" min="5000" max="30000" step="1000" [(ngModel)]="maxFee" (ngModelChange)="enableBudget()" class="w-full" aria-label="Maximum monthly budget" />
           <div class="flex justify-between text-xs text-muted-foreground mt-2"><span>PKR 5k</span><span>{{ budgetLabel }}</span></div>
         </section>
         <section>

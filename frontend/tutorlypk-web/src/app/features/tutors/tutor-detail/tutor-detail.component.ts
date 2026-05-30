@@ -5,6 +5,7 @@ import { ApiService } from '../../../core/services/api.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { TutorProfile } from '../../../core/models/api.models';
 import { IconComponent } from '../../../shared/components/icon/icon.component';
+import { isReliableImageUrl } from '../../../shared/image-utils';
 
 @Component({
   selector: 'app-tutor-detail',
@@ -21,12 +22,12 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
               <div class="relative flex flex-col md:flex-row gap-6">
                 <div class="relative shrink-0">
                   <div class="h-32 w-32 rounded-3xl bg-aurora p-[2px]">
-                    @if (imageFailed) {
+                    @if (showProfileImage) {
+                      <img [src]="profile.summary.photoUrl" [alt]="profile.summary.name" (error)="imageFailed = true" class="h-full w-full rounded-3xl object-cover" />
+                    } @else {
                       <div class="h-full w-full rounded-3xl grid place-items-center bg-background text-cyan font-display text-3xl font-bold">
                         {{ profile.summary.initials }}
                       </div>
-                    } @else {
-                      <img [src]="profile.summary.photoUrl" [alt]="profile.summary.name" (error)="imageFailed = true" class="h-full w-full rounded-3xl object-cover" />
                     }
                   </div>
                   <div class="absolute -bottom-1 -right-1 bg-success rounded-full p-1 ring-2 ring-background"><app-icon name="shield-check" className="h-5 w-5 text-background" /></div>
@@ -113,6 +114,10 @@ export class TutorDetailComponent implements OnInit {
   imageFailed = false;
   savedTutor = false;
   isSavingTutor = false;
+
+  get showProfileImage(): boolean {
+    return !this.imageFailed && isReliableImageUrl(this.profile?.summary.photoUrl);
+  }
 
   constructor(
     private readonly route: ActivatedRoute,

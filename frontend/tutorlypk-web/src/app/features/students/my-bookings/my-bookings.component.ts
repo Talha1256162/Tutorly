@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { BookingSummary } from '../../../core/models/api.models';
+import { initialsFromName, isReliableImageUrl } from '../../../shared/image-utils';
 
 @Component({
   selector: 'app-my-bookings',
@@ -20,7 +21,11 @@ import { BookingSummary } from '../../../core/models/api.models';
           @for (booking of bookings; track booking.id) {
             <article class="glass-strong rounded-3xl p-6 shadow-card">
               <div class="flex items-start gap-4">
-                <img [src]="booking.tutorPhotoUrl" class="h-16 w-16 rounded-2xl object-cover" />
+                @if (hasReliableImage(booking.tutorPhotoUrl)) {
+                  <img [src]="booking.tutorPhotoUrl" [alt]="booking.tutorName" class="h-16 w-16 rounded-2xl object-cover" />
+                } @else {
+                  <div class="premium-avatar-fallback h-16 w-16 rounded-2xl">{{ initials(booking.tutorName) }}</div>
+                }
                 <div class="flex-1 min-w-0">
                   <h2 class="font-display text-xl font-semibold">{{ booking.tutorName }}</h2>
                   <p class="text-muted-foreground">{{ booking.subjects.join(', ') }}</p>
@@ -52,5 +57,13 @@ export class MyBookingsComponent implements OnInit {
       this.bookings = bookings;
       this.cdr.detectChanges();
     });
+  }
+
+  hasReliableImage(url: string): boolean {
+    return isReliableImageUrl(url);
+  }
+
+  initials(name: string): string {
+    return initialsFromName(name);
   }
 }

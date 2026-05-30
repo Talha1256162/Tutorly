@@ -21,25 +21,25 @@ import { IconComponent } from '../icon/icon.component';
         <div>
           <h4 class="font-semibold mb-3">Students</h4>
           <ul class="space-y-2 text-muted-foreground">
-            <li><a routerLink="/tutors">Find Tutors</a></li>
-            <li><a routerLink="/dashboard">Student Dashboard</a></li>
-            <li><a routerLink="/" fragment="how">How It Works</a></li>
+            <li><a routerLink="/tutors" class="footer-link">Find Tutors</a></li>
+            <li><a routerLink="/dashboard" class="footer-link">Student Dashboard</a></li>
+            <li><a routerLink="/" fragment="how" class="footer-link">How It Works</a></li>
           </ul>
         </div>
         <div>
           <h4 class="font-semibold mb-3">Tutors</h4>
           <ul class="space-y-2 text-muted-foreground">
-            <li><a routerLink="/role">Join as Tutor</a></li>
-            <li><a routerLink="/tutor-dashboard">Tutor Dashboard</a></li>
-            <li><a routerLink="/" fragment="pricing">Pricing</a></li>
+            <li><a routerLink="/role" class="footer-link">Join as Tutor</a></li>
+            <li><a routerLink="/tutor-dashboard" class="footer-link">Tutor Dashboard</a></li>
+            <li><a routerLink="/" fragment="pricing" class="footer-link">Pricing</a></li>
           </ul>
         </div>
         <div>
           <h4 class="font-semibold mb-3">Company</h4>
           <ul class="space-y-2 text-muted-foreground">
-            <li><a>About</a></li>
-            <li><a>Trust & Safety</a></li>
-            <li><a>Contact</a></li>
+            <li><span class="footer-link footer-link--static">About</span></li>
+            <li><span class="footer-link footer-link--static">Trust & Safety</span></li>
+            <li><span class="footer-link footer-link--static">Contact</span></li>
           </ul>
         </div>
       </div>

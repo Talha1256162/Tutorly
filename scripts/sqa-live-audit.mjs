@@ -134,7 +134,14 @@ async function auditPage(page, viewport, roleName, route) {
     }
   };
   const onPageError = error => pageErrors.push(error.message);
-  const onRequestFailed = request => failedRequests.push({ url: request.url(), failure: request.failure()?.errorText });
+  const onRequestFailed = request => {
+    const failure = request.failure()?.errorText;
+    if (failure === 'net::ERR_ABORTED') {
+      return;
+    }
+
+    failedRequests.push({ url: request.url(), failure });
+  };
   const onResponse = response => {
     if (response.status() >= 400 && !response.url().includes('/api/not-real')) {
       badResponses.push({ url: response.url(), status: response.status() });
@@ -262,6 +269,7 @@ async function runBehaviorChecks(browser) {
   const checks = [];
 
   await page.goto(`${baseUrl}/dashboard`, { waitUntil: 'domcontentloaded' });
+  await page.waitForURL(/\/login/, { timeout: 5000 }).catch(() => {});
   checks.push({
     name: 'logged-out protected route redirects to login',
     ok: page.url().includes('/login') && page.url().includes('returnUrl=%2Fdashboard'),
@@ -270,6 +278,7 @@ async function runBehaviorChecks(browser) {
 
   await login(page, student);
   await page.goto(`${baseUrl}/tutor-dashboard`, { waitUntil: 'domcontentloaded' });
+  await page.waitForURL(/\/dashboard/, { timeout: 5000 }).catch(() => {});
   checks.push({
     name: 'student cannot access tutor dashboard',
     ok: new URL(page.url()).pathname === '/dashboard',

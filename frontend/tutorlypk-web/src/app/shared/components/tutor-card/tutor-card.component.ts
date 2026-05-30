@@ -5,6 +5,7 @@ import { TutorSummary } from '../../../core/models/api.models';
 import { AuthService } from '../../../core/auth/auth.service';
 import { ApiService } from '../../../core/services/api.service';
 import { IconComponent } from '../icon/icon.component';
+import { isReliableImageUrl } from '../../image-utils';
 
 @Component({
   selector: 'app-tutor-card',
@@ -32,10 +33,10 @@ import { IconComponent } from '../icon/icon.component';
       <div class="flex items-start gap-4">
         <div class="relative shrink-0">
           <div class="tutor-avatar">
-            @if (imageFailed) {
-              <span class="tutor-avatar-fallback">{{ tutor.initials }}</span>
-            } @else {
+            @if (showImage) {
               <img [src]="tutor.photoUrl" [alt]="tutor.name" (error)="markImageFailed()" />
+            } @else {
+              <span class="tutor-avatar-fallback">{{ tutor.initials }}</span>
             }
           </div>
           @if (tutor.verified) {
@@ -101,6 +102,10 @@ export class TutorCardComponent {
 
   get isSaved(): boolean {
     return this.saved;
+  }
+
+  get showImage(): boolean {
+    return !this.imageFailed && isReliableImageUrl(this.tutor.photoUrl);
   }
 
   markImageFailed(): void {
