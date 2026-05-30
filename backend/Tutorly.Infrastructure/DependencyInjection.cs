@@ -13,6 +13,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
+        services.Configure<GoogleAuthSettings>(configuration.GetSection("Google"));
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
         services.AddScoped<ILookupRepository, LookupRepository>();
         services.AddScoped<ITutorRepository, TutorRepository>();

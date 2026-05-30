@@ -7,7 +7,8 @@ param(
     [string]$FtpPassword,
     [Parameter(Mandatory = $true)]
     [string]$LocalPath,
-    [string]$RemotePath = 'wwwroot'
+    [string]$RemotePath = 'wwwroot',
+    [switch]$AppOffline
 )
 
 $ErrorActionPreference = 'Stop'
@@ -36,6 +37,8 @@ function Invoke-FtpRequest([string]$remotePath, [string]$method) {
     $request.UsePassive = $true
     $request.UseBinary = $true
     $request.KeepAlive = $false
+    $request.Timeout = 60000
+    $request.ReadWriteTimeout = 60000
     return $request
 }
 
@@ -94,26 +97,46 @@ function Send-FtpFile([string]$localFile, [string]$remoteFile) {
     }
 }
 
-New-FtpDirectory $RemotePath
-Remove-FtpFileIfExists "$RemotePath/iisstart.htm"
+$appOfflinePath = $null
 
-$directories = Get-ChildItem -LiteralPath $localRoot -Recurse -Directory |
-    Sort-Object { $_.FullName.Length }
+try {
+    New-FtpDirectory $RemotePath
+    Remove-FtpFileIfExists "$RemotePath/iisstart.htm"
 
-foreach ($directory in $directories) {
-    $relative = $directory.FullName.Substring($localRootWithSeparator.Length).Replace('\', '/')
-    New-FtpDirectory "$RemotePath/$relative"
-}
+    if ($AppOffline) {
+        $appOfflinePath = Join-Path ([System.IO.Path]::GetTempPath()) "app_offline_$([Guid]::NewGuid().ToString('N')).htm"
+        Set-Content -Path $appOfflinePath -Value '<html><body><h1>Mentora is updating.</h1></body></html>' -Encoding utf8
+        Send-FtpFile $appOfflinePath "$RemotePath/app_offline.htm"
+        Start-Sleep -Seconds 8
+    }
 
-$files = Get-ChildItem -LiteralPath $localRoot -Recurse -File
-$uploaded = 0
-foreach ($file in $files) {
-    $relative = $file.FullName.Substring($localRootWithSeparator.Length).Replace('\', '/')
-    Send-FtpFile $file.FullName "$RemotePath/$relative"
-    $uploaded++
-    if (($uploaded % 20) -eq 0 -or $uploaded -eq $files.Count) {
-        Write-Host "Uploaded $uploaded / $($files.Count) files..."
+    $directories = Get-ChildItem -LiteralPath $localRoot -Recurse -Directory |
+        Sort-Object { $_.FullName.Length }
+
+    foreach ($directory in $directories) {
+        $relative = $directory.FullName.Substring($localRootWithSeparator.Length).Replace('\', '/')
+        New-FtpDirectory "$RemotePath/$relative"
+    }
+
+    $files = Get-ChildItem -LiteralPath $localRoot -Recurse -File
+    $uploaded = 0
+    foreach ($file in $files) {
+        $relative = $file.FullName.Substring($localRootWithSeparator.Length).Replace('\', '/')
+        Write-Host "Uploading $relative..."
+        Send-FtpFile $file.FullName "$RemotePath/$relative"
+        $uploaded++
+        if (($uploaded % 20) -eq 0 -or $uploaded -eq $files.Count) {
+            Write-Host "Uploaded $uploaded / $($files.Count) files..."
+        }
+    }
+
+    Write-Host "Uploaded $uploaded files to ftp://$FtpServer/$RemotePath/"
+} finally {
+    if ($AppOffline) {
+        Remove-FtpFileIfExists "$RemotePath/app_offline.htm"
+    }
+
+    if ($appOfflinePath -and (Test-Path $appOfflinePath)) {
+        Remove-Item -LiteralPath $appOfflinePath -Force
     }
 }
-
-Write-Host "Uploaded $uploaded files to ftp://$FtpServer/$RemotePath/"

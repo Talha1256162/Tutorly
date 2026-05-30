@@ -45,6 +45,7 @@ public interface IMessageRepository
 public interface IAuthService
 {
     Task<AuthResult> LoginAsync(LoginRequest request, CancellationToken cancellationToken);
+    Task<AuthResult> LoginWithGoogleAsync(GoogleLoginRequest request, CancellationToken cancellationToken);
     Task<AuthResult> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken);
     Task<AuthResult> RefreshAsync(RefreshTokenRequest request, CancellationToken cancellationToken);
 }
@@ -62,6 +63,10 @@ public sealed record TutorSearchQuery(
     string? Sort);
 
 public sealed record LoginRequest(string EmailOrPhone, string Password);
+
+public sealed record GoogleLoginRequest(string Credential, string? Role);
+
+public sealed record GoogleAuthConfig(bool Enabled, string? ClientId);
 
 public sealed record RegisterRequest(
     string Role,

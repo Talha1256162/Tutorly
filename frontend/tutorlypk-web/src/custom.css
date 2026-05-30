@@ -696,6 +696,84 @@ input[type="range"] {
   background: rgba(255, 255, 255, 0.12);
 }
 
+.google-signin-shell,
+.google-fallback-btn {
+  width: 100%;
+  min-height: 3.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.048)),
+    rgba(8, 18, 18, 0.7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.google-signin-shell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 0.35rem;
+}
+
+.google-signin-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2.75rem;
+}
+
+.google-signin-button > div {
+  margin-inline: auto !important;
+}
+
+.google-signin-shell--busy {
+  pointer-events: none;
+}
+
+.google-signin-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: inherit;
+  background: rgba(6, 16, 15, 0.78);
+  color: var(--foreground);
+  font-weight: 800;
+}
+
+.google-fallback-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 0.85rem 1.1rem;
+  color: var(--foreground);
+  font-weight: 800;
+  text-align: center;
+}
+
+.google-fallback-btn:hover {
+  border-color: rgba(114, 223, 247, 0.34);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.065)),
+    rgba(8, 18, 18, 0.76);
+  transform: translateY(-1px);
+}
+
+.google-fallback-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: 0 0 1.75rem;
+  border-radius: 999px;
+  background: #fff;
+  color: #1f1f1f;
+  font-weight: 850;
+}
+
 .auth-footer {
   margin-top: 1.35rem;
   color: var(--muted-foreground);

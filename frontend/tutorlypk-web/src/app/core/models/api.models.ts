@@ -26,6 +26,16 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface GoogleLoginRequest {
+  credential: string;
+  role?: string;
+}
+
+export interface GoogleAuthConfig {
+  enabled: boolean;
+  clientId?: string | null;
+}
+
 export interface RegisterRequest {
   role: string;
   fullName: string;

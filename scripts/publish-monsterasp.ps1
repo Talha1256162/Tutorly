@@ -6,6 +6,7 @@ param(
     [string]$SqlEncrypt = $(if ($env:MENTORA_SQL_ENCRYPT) { $env:MENTORA_SQL_ENCRYPT } else { 'False' }),
     [string]$WebsiteOrigin = 'http://mentora.tryasp.net',
     [string]$JwtSigningKey = $env:MENTORA_JWT_SIGNING_KEY,
+    [string]$GoogleClientId = $env:MENTORA_GOOGLE_CLIENT_ID,
     [switch]$SkipInstall,
     [switch]$AllowMissingDatabaseConfig
 )
@@ -80,6 +81,9 @@ $runtimeConfig = [ordered]@{
         SigningKey = $JwtSigningKey
         AccessTokenMinutes = 30
         RefreshTokenDays = 14
+    }
+    Google = [ordered]@{
+        ClientId = if ($GoogleClientId) { $GoogleClientId } else { '' }
     }
     Swagger = [ordered]@{
         Enabled = $false
