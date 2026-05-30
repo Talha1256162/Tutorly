@@ -8,6 +8,7 @@ const seedPassword = 'Password123!';
 
 test('Tutorly core application smoke flow', async ({ page }, testInfo) => {
   const browserErrors: string[] = [];
+  const gotoApp = (path = '') => page.goto(`${appUrl}${path}`, { waitUntil: 'commit', timeout: 30_000 });
 
   page.on('console', message => {
     if (message.type() === 'error') {
@@ -25,24 +26,24 @@ test('Tutorly core application smoke flow', async ({ page }, testInfo) => {
   });
 
   await test.step('landing page renders real content', async () => {
-    await page.goto(appUrl);
+    await gotoApp();
     await expect(page.getByText('Find the right tutor')).toBeVisible();
     await expect(page.getByText("Pakistan's #1 AI-verified tutor marketplace")).toBeVisible();
     await page.screenshot({ path: testInfo.outputPath('home.png'), fullPage: false });
   });
 
   await test.step('browse tutors and tutor detail render from API data', async () => {
-    await page.goto(`${appUrl}/tutors`);
+    await gotoApp('/tutors');
     await expect(page.getByRole('heading', { name: '6 tutors' })).toBeVisible();
     await expect(page.getByText('Ayesha Malik')).toBeVisible();
 
-    await page.goto(`${appUrl}/tutors/ayesha-malik`);
+    await gotoApp('/tutors/ayesha-malik');
     await expect(page.getByRole('heading', { name: 'Ayesha Malik' })).toBeVisible();
     await expect(page.getByText('Verified tutor with CNIC check')).toBeVisible();
   });
 
   await test.step('student can log in and see learner dashboard', async () => {
-    await page.goto(`${appUrl}/login`);
+    await gotoApp('/login');
     await page.locator('input[name="emailOrPhone"]').fill(studentEmail);
     await page.locator('input[name="password"]').fill(seedPassword);
     await page.locator('button[type="submit"]').click();
@@ -54,7 +55,7 @@ test('Tutorly core application smoke flow', async ({ page }, testInfo) => {
   });
 
   await test.step('authenticated booking flow creates a demo request', async () => {
-    await page.goto(`${appUrl}/book/ayesha-malik`);
+    await gotoApp('/book/ayesha-malik');
     await expect(page.getByText('Book a free demo with Ayesha')).toBeVisible();
     await page.getByPlaceholder('Student name').fill('Smoke Test Student');
     await page.getByPlaceholder('Parent phone').fill('+923009990000');
@@ -64,19 +65,19 @@ test('Tutorly core application smoke flow', async ({ page }, testInfo) => {
   });
 
   await test.step('student protected pages render', async () => {
-    await page.goto(`${appUrl}/my-bookings`);
+    await gotoApp('/my-bookings');
     await expect(page.getByRole('heading', { name: 'Demo classes and active sessions.' })).toBeVisible();
     await expect(page.locator('article').filter({ hasText: 'Ayesha Malik' }).first()).toBeVisible();
 
-    await page.goto(`${appUrl}/saved-tutors`);
+    await gotoApp('/saved-tutors');
     await expect(page.getByRole('heading', { name: 'Tutors you kept for later.' })).toBeVisible();
 
-    await page.goto(`${appUrl}/messages`);
+    await gotoApp('/messages');
     await expect(page.getByText('Teacher Messages')).toBeVisible();
   });
 
   await test.step('Tutorly Insight diagnostic and matched tutors render', async () => {
-    await page.goto(`${appUrl}/insight/diagnostic`);
+    await gotoApp('/insight/diagnostic');
     await expect(page.getByRole('heading', { name: 'Start Free Level Check' })).toBeVisible();
     const startDiagnosticButton = page.getByRole('button', { name: 'Start Diagnostic Test' });
     await expect(startDiagnosticButton).toBeEnabled();
@@ -111,7 +112,7 @@ test('Tutorly core application smoke flow', async ({ page }, testInfo) => {
 
   await test.step('tutor can log in and see teacher dashboard', async () => {
     await page.evaluate(() => localStorage.clear());
-    await page.goto(`${appUrl}/login`, { waitUntil: 'domcontentloaded' });
+    await gotoApp('/login');
     await expect(page.getByRole('heading', { name: 'Welcome back' })).toBeVisible();
     await page.locator('input[name="emailOrPhone"]').fill(tutorEmail);
     await page.locator('input[name="password"]').fill(seedPassword);

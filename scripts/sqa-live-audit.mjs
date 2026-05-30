@@ -113,7 +113,7 @@ async function auditRouteSet(browser, viewport, roleName, credentials) {
 }
 
 async function login(page, credentials) {
-  await page.goto(`${baseUrl}/login`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.goto(`${baseUrl}/login`, { waitUntil: 'commit', timeout: 30000 });
   await page.locator('input[name="emailOrPhone"]').fill(credentials.emailOrPhone);
   await page.locator('input[name="password"]').fill(credentials.password);
   await Promise.all([
@@ -157,8 +157,10 @@ async function auditPage(page, viewport, roleName, route) {
   let mainStatus = null;
   let navigationError = null;
   try {
-    const response = await page.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    const response = await page.goto(`${baseUrl}${route}`, { waitUntil: 'commit', timeout: 30000 });
     mainStatus = response?.status() ?? null;
+    await page.locator('app-root').waitFor({ state: 'attached', timeout: 5000 }).catch(() => {});
+    await page.waitForFunction(() => (document.body?.innerText ?? '').trim().length > 0, null, { timeout: 10000 }).catch(() => {});
     await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
   } catch (error) {
     navigationError = error.message;
