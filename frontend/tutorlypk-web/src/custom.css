@@ -255,6 +255,35 @@ input[type="range"] {
   border-color: rgba(255, 255, 255, 0.2);
 }
 
+.premium-hero-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3.4rem;
+  padding: 0.8rem 1.1rem;
+  border: 1px solid rgba(114, 223, 247, 0.28);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.055)),
+    rgba(7, 18, 18, 0.62);
+  color: var(--foreground);
+  font-weight: 800;
+  line-height: 1.1;
+  white-space: nowrap;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 18px 46px -34px rgba(114, 223, 247, 0.8);
+}
+
+.premium-hero-action:hover {
+  border-color: rgba(114, 223, 247, 0.5);
+  background:
+    linear-gradient(180deg, rgba(127, 242, 202, 0.16), rgba(255, 255, 255, 0.07)),
+    rgba(7, 18, 18, 0.72);
+  transform: translateY(-1px);
+}
+
 .premium-btn--compact {
   min-height: 2.75rem;
   border-radius: 0.85rem;
@@ -957,7 +986,8 @@ input[type="range"] {
   gap: 1.5rem;
 }
 
-.premium-hero-row .premium-btn {
+.premium-hero-row .premium-btn,
+.premium-hero-row .premium-hero-action {
   flex: 0 0 auto;
   margin-left: auto;
 }
@@ -1242,7 +1272,8 @@ input[type="range"] {
     flex-direction: column;
   }
 
-  .premium-hero-row .premium-btn {
+  .premium-hero-row .premium-btn,
+  .premium-hero-row .premium-hero-action {
     margin-left: 0;
   }
 

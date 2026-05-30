@@ -17,7 +17,8 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
             <h1 class="font-display text-4xl font-bold">Matched Tutors</h1>
             <p class="text-muted-foreground mt-2 max-w-2xl">Verified tutors ranked by learning gaps, class level, city, and quality score.</p>
           </div>
-          <a routerLink="/dashboard" class="premium-btn premium-btn--secondary">
+          <a routerLink="/dashboard" class="premium-hero-action" aria-label="Back to learner dashboard">
+            <app-icon name="arrow-left" className="h-4 w-4" />
             Back to dashboard
           </a>
         </div>

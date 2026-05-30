@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import {
   LucideArrowRight,
+  LucideArrowLeft,
   LucideBook,
   LucideBookOpen,
   LucideCalendar,
@@ -35,6 +36,7 @@ import {
   standalone: true,
   imports: [
     LucideArrowRight,
+    LucideArrowLeft,
     LucideBook,
     LucideBookOpen,
     LucideCalendar,
@@ -66,6 +68,7 @@ import {
   template: `
     @switch (name) {
       @case ('arrow-right') { <svg lucideArrowRight [class]="className" aria-hidden="true"></svg> }
+      @case ('arrow-left') { <svg lucideArrowLeft [class]="className" aria-hidden="true"></svg> }
       @case ('book') { <svg lucideBook [class]="className" aria-hidden="true"></svg> }
       @case ('book-open') { <svg lucideBookOpen [class]="className" aria-hidden="true"></svg> }
       @case ('calendar') { <svg lucideCalendar [class]="className" aria-hidden="true"></svg> }
