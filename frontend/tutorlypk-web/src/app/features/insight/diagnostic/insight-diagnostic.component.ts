@@ -26,7 +26,7 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
       </div>
 
       @if (!attemptId) {
-        <div class="grid lg:grid-cols-[1fr_0.8fr] gap-6 mt-8">
+        <div class="diagnostic-setup-grid">
           <section class="glass-strong rounded-3xl p-7 shadow-card">
             <h2 class="font-display text-2xl font-semibold">Diagnostic setup</h2>
             <div class="grid md:grid-cols-2 gap-5 mt-6">
@@ -64,10 +64,14 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
               <div class="mt-5 rounded-2xl border border-warning/30 bg-warning/10 px-4 py-3 text-sm text-warning">{{ error }}</div>
             }
 
-            <button class="mt-7 premium-btn premium-btn--primary" (click)="start()" [disabled]="loading || setupLoading || !selectedChildId || selectedSubjects.length === 0">
-              <app-icon name="zap" className="h-4 w-4" />
-              Start Diagnostic Test
-            </button>
+            <div class="diagnostic-start-row">
+              <button class="diagnostic-start-btn" (click)="start()" [disabled]="loading || setupLoading || !selectedChildId || selectedSubjects.length === 0">
+                <span class="diagnostic-start-icon">
+                  <app-icon name="zap" className="h-5 w-5" />
+                </span>
+                <span>{{ loading ? 'Preparing test' : 'Start Diagnostic Test' }}</span>
+              </button>
+            </div>
           </section>
 
           <aside class="glass-strong rounded-3xl p-7 shadow-card">
