@@ -62,7 +62,7 @@ async function runApiChecks() {
   const api = await request.newContext({ baseURL: baseUrl });
   const checks = [
     { name: 'health', method: 'GET', path: '/health', expect: 200 },
-    { name: 'swagger', method: 'GET', path: '/swagger/index.html', expect: 200 },
+    { name: 'swagger-disabled', method: 'GET', path: '/swagger/index.html', expect: 404 },
     { name: 'lookups', method: 'GET', path: '/api/lookups', expect: 200 },
     { name: 'tutors', method: 'GET', path: '/api/tutors', expect: 200 },
     { name: 'tutor-profile', method: 'GET', path: '/api/tutors/ayesha-malik', expect: 200 },

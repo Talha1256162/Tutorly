@@ -35,4 +35,34 @@ npm test
 
 ## Database
 
-Run `database/schema.sql` and `database/seed.sql` against a fresh database. For existing databases, apply the numbered scripts in `database/migrations/` in order.
+Run `database/schema.sql` and `database/seed.sql` against a fresh database. For existing databases, apply the numbered scripts in `database/migrations/` in order, or use the tracked migration helper:
+
+```powershell
+.\scripts\apply-database-migrations.ps1 `
+  -SqlServer "your-sql-server-host" `
+  -Database "your-database" `
+  -SqlUser "your-user" `
+  -SqlPassword "your-password"
+```
+
+The helper records applied files in `dbo.schemaMigrations`, so future production releases only run new migration files.
+
+## Production Publish
+
+Build the Angular app, publish the .NET API, and prepare the MonsterASP upload folder with:
+
+```powershell
+.\scripts\publish-monsterasp.ps1 `
+  -SqlServer "your-sql-server-host" `
+  -Database "your-database" `
+  -SqlUser "your-user" `
+  -SqlPassword "your-password"
+```
+
+Upload the generated `artifacts/monsterasp` folder with `scripts/upload-ftp.ps1`, then run the production smoke check:
+
+```powershell
+$env:TUTORLY_APP_URL = "http://mentora.tryasp.net"
+$env:TUTORLY_API_URL = "http://mentora.tryasp.net"
+npm --prefix frontend/tutorlypk-web run smoke
+```
