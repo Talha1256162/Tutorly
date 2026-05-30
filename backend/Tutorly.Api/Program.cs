@@ -57,12 +57,22 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+    ?? new[]
+    {
+        "http://localhost:4200",
+        "http://127.0.0.1:4200",
+        "http://mentora.tryasp.net",
+        "https://mentora.tryasp.net",
+        "https://tutorlypk.lovable.app"
+    };
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("TutorlyWeb", policy =>
     {
         policy
-            .WithOrigins("http://localhost:4200", "http://127.0.0.1:4200", "https://tutorlypk.lovable.app")
+            .WithOrigins(allowedOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -102,18 +112,42 @@ var app = builder.Build();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
-if (app.Environment.IsDevelopment())
+var isSwaggerEnabled = app.Environment.IsDevelopment()
+    || app.Configuration.GetValue<bool>("Swagger:Enabled");
+if (isSwaggerEnabled)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.MapMethods(
+        "/swagger/{**path}",
+        new[] { "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS" },
+        () => Results.NotFound());
+    app.MapGet("/swagger", () => Results.NotFound());
+}
 
-app.UseHttpsRedirection();
+if (app.Configuration.GetValue("HttpsRedirection:Enabled", true))
+{
+    app.UseHttpsRedirection();
+}
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseCors("TutorlyWeb");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapGet("/health", () => Results.Ok(new { status = "Healthy", service = "Tutorly.Api" }));
 app.MapControllers();
 app.MapHub<ChatHub>("/hubs/chat");
+app.MapMethods(
+    "/api/{**path}",
+    new[] { "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS" },
+    (string? path) => Results.Json(
+        Tutorly.Shared.ApiResponse<object>.Fail(404, "API endpoint was not found.", new { path = $"/api/{path}" }),
+        statusCode: StatusCodes.Status404NotFound));
+app.MapFallbackToFile("index.html");
 
 app.Run();

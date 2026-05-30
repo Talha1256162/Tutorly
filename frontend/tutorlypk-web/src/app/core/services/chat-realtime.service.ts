@@ -8,6 +8,7 @@ import {
   LogLevel,
 } from '@microsoft/signalr';
 import { MessageItem } from '../models/api.models';
+import { apiUrl } from '../api-endpoints';
 
 export type ChatConnectionStatus = 'connecting' | 'live' | 'reconnecting' | 'offline';
 
@@ -18,7 +19,7 @@ export interface RealtimeChatMessage {
 
 @Injectable({ providedIn: 'root' })
 export class ChatRealtimeService {
-  private readonly hubUrl = 'http://localhost:5101/hubs/chat';
+  private readonly hubUrl = apiUrl('/hubs/chat');
   private readonly messageSubject = new Subject<RealtimeChatMessage>();
   private readonly statusSubject = new BehaviorSubject<ChatConnectionStatus>('offline');
   private connection?: HubConnection;

@@ -30,8 +30,8 @@ import { BookingSummary } from '../../../core/models/api.models';
               </div>
               <p class="mt-5 text-sm text-muted-foreground">{{ booking.learningGoal }}</p>
               <div class="mt-6 flex flex-wrap gap-3">
-                <a [routerLink]="['/tutors', booking.tutorId]" class="rounded-xl border border-white/10 px-5 py-3 font-semibold">View tutor</a>
-                <button class="rounded-xl bg-primary-gradient px-5 py-3 font-semibold text-primary-foreground shadow-glow">View details</button>
+                <a [routerLink]="['/tutors', booking.tutorId]" class="premium-btn premium-btn--secondary premium-btn--compact">View tutor</a>
+                <button class="premium-btn premium-btn--primary premium-btn--compact">View details</button>
               </div>
             </article>
           } @empty {

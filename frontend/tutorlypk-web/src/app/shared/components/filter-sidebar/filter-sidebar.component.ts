@@ -10,12 +10,12 @@ type MultiFilterKey = 'subjects' | 'classLevels' | 'cities' | 'modes' | 'genders
   standalone: true,
   imports: [FormsModule, IconComponent],
   template: `
-    <aside class="glass-strong rounded-3xl p-6 shadow-card h-fit">
+    <aside class="glass-strong rounded-3xl p-6 shadow-card h-fit premium-filter">
       <div class="flex items-center justify-between gap-3 mb-6">
         <h3 class="font-display font-semibold flex items-center gap-2">
           <app-icon name="sliders" className="h-4 w-4" /> Filters
         </h3>
-        <button type="button" class="text-xs text-muted-foreground hover:text-foreground" (click)="reset()">Reset</button>
+        <button type="button" class="auth-link text-xs" (click)="reset()">Reset</button>
       </div>
       <div class="space-y-6 text-sm">
         <section>

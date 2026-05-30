@@ -12,10 +12,10 @@ import { StatsCardComponent } from '../../../shared/components/stats-card/stats-
   template: `
     @if (dashboard) {
       <section class="mx-auto max-w-7xl px-6 py-8">
-        <div class="glass-strong rounded-3xl p-8 shadow-card bg-hero-gradient">
+        <div class="glass-strong rounded-3xl p-8 shadow-card bg-hero-gradient premium-dashboard-hero">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
             <div><div class="text-cyan text-xs font-bold uppercase tracking-wider mb-2">Teacher portal</div><h1 class="font-display text-4xl font-bold">{{ dashboard.headline }}</h1><p class="text-muted-foreground mt-2">{{ dashboard.subheadline }}</p></div>
-            <div class="md:w-64"><div class="flex justify-between text-sm mb-2"><span class="text-muted-foreground">Profile strength</span><b>{{ dashboard.profileStrength }}%</b></div><div class="h-2 rounded-full bg-white/5 overflow-hidden"><div class="h-full bg-aurora" [style.width.%]="dashboard.profileStrength"></div></div><a routerLink="/messages" class="mt-5 inline-flex w-full justify-center rounded-xl bg-primary-gradient px-4 py-3 font-semibold text-primary-foreground">Open student messages</a></div>
+            <div class="md:w-64"><div class="flex justify-between text-sm mb-2"><span class="text-muted-foreground">Profile strength</span><b>{{ dashboard.profileStrength }}%</b></div><div class="h-2 rounded-full bg-white/5 overflow-hidden"><div class="h-full bg-aurora" [style.width.%]="dashboard.profileStrength"></div></div><a routerLink="/messages" class="mt-5 premium-btn premium-btn--primary w-full">Open student messages</a></div>
           </div>
         </div>
         <div class="grid md:grid-cols-4 gap-5 mt-8">@for (stat of dashboard.stats; track stat.label) {<app-stats-card [stat]="stat" />}</div>
@@ -29,12 +29,12 @@ import { StatsCardComponent } from '../../../shared/components/stats-card/stats-
                 }
               </div>
               <div class="flex justify-between text-xs text-muted-foreground mt-3">@for (label of dashboard.earnings.labels; track label) {<span>{{ label }}</span>}</div>
-              <div class="mt-8 pt-6 border-t border-white/5 flex justify-between items-end"><div><div class="text-muted-foreground">YTD earnings</div><div class="font-display text-3xl font-bold">{{ dashboard.earnings.totalText }}</div></div><button class="rounded-2xl border border-white/10 px-5 py-2 font-semibold">Withdraw</button></div>
+              <div class="mt-8 pt-6 border-t border-white/5 flex justify-between items-end gap-4"><div><div class="text-muted-foreground">YTD earnings</div><div class="font-display text-3xl font-bold">{{ dashboard.earnings.totalText }}</div></div><button class="premium-btn premium-btn--secondary premium-btn--compact">Withdraw</button></div>
             </section>
             <section class="glass-strong rounded-3xl p-7 shadow-card">
               <h2 class="font-display text-xl font-semibold mb-6">New student requests</h2>
               @for (request of dashboard.studentRequests; track request.studentName) {
-                <div class="glass rounded-3xl p-4 flex items-center gap-4 mb-4"><div class="h-12 w-12 rounded-full bg-primary-gradient grid place-items-center text-primary-foreground font-semibold">{{ request.initial }}</div><div class="flex-1"><div class="font-semibold">{{ request.studentName }}</div><div class="text-sm text-muted-foreground">{{ request.detail }} - {{ request.receivedAt }}</div></div><button class="rounded-2xl border border-white/10 px-4 py-2 font-semibold">Decline</button><button class="rounded-2xl bg-primary-gradient px-4 py-2 font-semibold text-primary-foreground">Accept</button></div>
+                <div class="glass rounded-3xl p-4 tutor-request-row"><div class="h-12 w-12 rounded-full bg-primary-gradient grid place-items-center text-primary-foreground font-semibold">{{ request.initial }}</div><div class="flex-1"><div class="font-semibold">{{ request.studentName }}</div><div class="text-sm text-muted-foreground">{{ request.detail }} - {{ request.receivedAt }}</div></div><div class="tutor-request-actions"><button class="premium-btn premium-btn--secondary premium-btn--compact">Decline</button><button class="premium-btn premium-btn--primary premium-btn--compact">Accept</button></div></div>
               }
             </section>
             <section class="glass-strong rounded-3xl p-7 shadow-card">
@@ -53,7 +53,7 @@ import { StatsCardComponent } from '../../../shared/components/stats-card/stats-
                   <div class="space-y-2">@for (slot of day.slots; track $index) {<div class="h-5 rounded-full" [class.bg-primary]="slot" [class.bg-white/5]="!slot"></div>}</div>
                 }
               </div>
-              <button class="w-full mt-6 rounded-2xl border border-white/10 px-5 py-3 font-semibold">Edit availability</button>
+              <button class="w-full mt-6 premium-btn premium-btn--secondary">Edit availability</button>
             </section>
             <section class="glass-strong rounded-3xl p-7 shadow-card">
               <h2 class="font-display text-xl font-semibold mb-5">Recent reviews</h2>

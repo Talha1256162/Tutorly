@@ -1,6 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ApiService } from '../../../core/services/api.service';
+import { AuthService } from '../../../core/auth/auth.service';
 import { TutorProfile } from '../../../core/models/api.models';
 import { IconComponent } from '../../../shared/components/icon/icon.component';
 
@@ -11,7 +13,7 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
   template: `
     @if (profile) {
       <section class="mx-auto max-w-7xl px-6 py-10">
-        <a routerLink="/tutors" class="text-sm text-muted-foreground">← Back to tutors</a>
+        <a routerLink="/tutors" class="auth-link text-sm">&lt;- Back to tutors</a>
         <div class="grid lg:grid-cols-[1fr_360px] gap-8 mt-6">
           <div class="space-y-6">
             <div class="glass-strong rounded-3xl p-8 shadow-card relative overflow-hidden">
@@ -19,7 +21,13 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
               <div class="relative flex flex-col md:flex-row gap-6">
                 <div class="relative shrink-0">
                   <div class="h-32 w-32 rounded-3xl bg-aurora p-[2px]">
-                    <img [src]="profile.summary.photoUrl" [alt]="profile.summary.name" class="h-full w-full rounded-3xl object-cover" />
+                    @if (imageFailed) {
+                      <div class="h-full w-full rounded-3xl grid place-items-center bg-background text-cyan font-display text-3xl font-bold">
+                        {{ profile.summary.initials }}
+                      </div>
+                    } @else {
+                      <img [src]="profile.summary.photoUrl" [alt]="profile.summary.name" (error)="imageFailed = true" class="h-full w-full rounded-3xl object-cover" />
+                    }
                   </div>
                   <div class="absolute -bottom-1 -right-1 bg-success rounded-full p-1 ring-2 ring-background"><app-icon name="shield-check" className="h-5 w-5 text-background" /></div>
                 </div>
@@ -67,7 +75,7 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
               <h2 class="font-display text-2xl font-semibold mb-5">Reviews</h2>
               <div class="grid md:grid-cols-2 gap-4">
                 @for (review of profile.reviews; track review.reviewerName) {
-                  <div class="glass rounded-2xl p-5"><div class="text-warning mb-2">★★★★★</div><p>"{{ review.quote }}"</p><div class="text-sm text-muted-foreground mt-4">{{ review.reviewerName }} · {{ review.context }}</div></div>
+                  <div class="glass rounded-2xl p-5"><div class="text-warning mb-2">*****</div><p>"{{ review.quote }}"</p><div class="text-sm text-muted-foreground mt-4">{{ review.reviewerName }} - {{ review.context }}</div></div>
                 }
               </div>
             </article>
@@ -82,8 +90,12 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
                   <div class="glass rounded-xl px-4 py-3 flex items-center justify-between"><span>{{ slot }}</span><span class="text-success text-sm">Available</span></div>
                 }
               </div>
-              <a [routerLink]="['/book', profile.summary.id]" class="mt-6 w-full inline-flex justify-center rounded-xl bg-primary-gradient px-5 py-3 font-semibold text-primary-foreground shadow-glow">Book Demo</a>
-              <a routerLink="/messages" [queryParams]="{ tutor: profile.summary.id }" class="mt-3 w-full inline-flex justify-center rounded-xl border border-white/10 bg-white/5 px-5 py-3 font-semibold hover:bg-white/10">Message Tutor</a>
+              <button type="button" class="mt-6 premium-btn premium-btn--secondary w-full" [disabled]="isSavingTutor" (click)="saveTutor()">
+                <app-icon name="heart" className="h-4 w-4" />
+                {{ savedTutor ? 'Saved to shortlist' : 'Save tutor' }}
+              </button>
+              <a [routerLink]="['/book', profile.summary.id]" class="mt-3 premium-btn premium-btn--primary w-full">Book Demo</a>
+              <a routerLink="/messages" [queryParams]="{ tutor: profile.summary.id }" class="mt-3 premium-btn premium-btn--secondary w-full">Message Tutor</a>
             </div>
             <div class="glass-strong rounded-3xl p-6 shadow-card space-y-3 text-sm">
               <div class="flex items-center gap-2"><app-icon name="shield-check" className="h-4 w-4 text-success" /> Verified tutor with CNIC check</div>
@@ -98,10 +110,15 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
 })
 export class TutorDetailComponent implements OnInit {
   profile?: TutorProfile;
+  imageFailed = false;
+  savedTutor = false;
+  isSavingTutor = false;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly api: ApiService,
+    private readonly authService: AuthService,
+    private readonly router: Router,
     private readonly cdr: ChangeDetectorRef,
   ) {}
 
@@ -110,6 +127,33 @@ export class TutorDetailComponent implements OnInit {
     this.api.tutorProfile(id).subscribe(profile => {
       this.profile = profile;
       this.cdr.detectChanges();
+    });
+  }
+
+  saveTutor(): void {
+    if (!this.profile || this.savedTutor || this.isSavingTutor) {
+      return;
+    }
+
+    if (!this.authService.isSignedIn()) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+      return;
+    }
+
+    this.isSavingTutor = true;
+    this.api.saveTutor(this.profile.summary.id).subscribe({
+      next: () => {
+        this.savedTutor = true;
+        this.isSavingTutor = false;
+        this.cdr.detectChanges();
+      },
+      error: error => {
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+        }
+        this.isSavingTutor = false;
+        this.cdr.detectChanges();
+      },
     });
   }
 }

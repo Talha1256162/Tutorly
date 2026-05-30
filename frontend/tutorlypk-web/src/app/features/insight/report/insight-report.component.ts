@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { InsightLearningGapReport } from '../../../core/models/api.models';
@@ -11,14 +11,14 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
   template: `
     <section class="mx-auto max-w-7xl px-6 py-8">
       @if (report) {
-        <div class="glass-strong rounded-3xl p-8 shadow-card bg-hero-gradient">
-          <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+        <div class="glass-strong rounded-3xl p-8 shadow-card bg-hero-gradient premium-dashboard-hero">
+          <div class="premium-hero-row">
             <div>
               <div class="text-cyan text-xs font-bold uppercase tracking-wider mb-2">Learning Gap Report</div>
               <h1 class="font-display text-4xl font-bold">{{ report.childName }}'s Tutorly Insight Report</h1>
               <p class="text-muted-foreground mt-3 max-w-3xl">{{ report.parentExplanation }}</p>
             </div>
-            <a [routerLink]="['/insight/matched-tutors', report.reportId]" class="inline-flex items-center gap-2 rounded-xl bg-primary-gradient px-6 py-3.5 font-semibold text-primary-foreground shadow-glow">
+            <a [routerLink]="['/insight/matched-tutors', report.reportId]" class="premium-btn premium-btn--primary">
               Matched Tutors
               <app-icon name="arrow-right" className="h-4 w-4" />
             </a>
@@ -101,12 +101,17 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
 export class InsightReportComponent implements OnInit {
   report?: InsightLearningGapReport;
 
-  constructor(private readonly route: ActivatedRoute, private readonly api: ApiService) {}
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly api: ApiService,
+    private readonly cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     const attemptId = this.route.snapshot.paramMap.get('attemptId') ?? '';
     this.api.insightReportByAttempt(attemptId).subscribe(report => {
       this.report = report;
+      this.cdr.detectChanges();
     });
   }
 }

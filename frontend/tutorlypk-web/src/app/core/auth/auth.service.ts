@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, tap, throwError } from 'rxjs';
 import { ApiResponse, AuthResult, AuthUser, LoginRequest, RegisterRequest } from '../models/api.models';
+import { apiUrl } from '../api-endpoints';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly baseUrl = 'http://localhost:5101/api/auth';
+  private readonly baseUrl = apiUrl('/api/auth');
   private readonly tokenKey = 'tutorly_access_token';
   private readonly refreshTokenKey = 'tutorly_refresh_token';
   private readonly expiresKey = 'tutorly_expires_at';

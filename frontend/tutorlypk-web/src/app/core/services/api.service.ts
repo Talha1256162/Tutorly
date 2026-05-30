@@ -36,10 +36,11 @@ import {
   mockTutors,
   profileFor,
 } from './mock-data';
+import { apiUrl } from '../api-endpoints';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
-  private readonly baseUrl = 'http://localhost:5101/api';
+  private readonly baseUrl = apiUrl('/api');
 
   constructor(private readonly http: HttpClient) {}
 
@@ -104,7 +105,12 @@ export class ApiService {
   saveTutor(tutorId: string): Observable<unknown> {
     return this.http.post<ApiResponse<unknown>>(`${this.baseUrl}/saved-tutors/${tutorId}`, {}).pipe(
       map(response => response.data),
-      catchError(() => of(null)),
+    );
+  }
+
+  removeSavedTutor(tutorId: string): Observable<unknown> {
+    return this.http.delete<ApiResponse<unknown>>(`${this.baseUrl}/saved-tutors/${tutorId}`).pipe(
+      map(response => response.data),
     );
   }
 

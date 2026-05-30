@@ -25,10 +25,14 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
               <div class="p-5">
                 <h1 class="font-display text-2xl font-semibold">{{ inboxTitle }}</h1>
                 <p class="text-xs text-muted-foreground mt-1 mb-4">{{ inboxSubtitle }}</p>
-                <div class="glass rounded-3xl px-4 py-3 flex items-center gap-2 text-muted-foreground"><app-icon name="search" className="h-4 w-4" />Search</div>
+                <label class="glass rounded-3xl px-4 py-3 flex items-center gap-2 text-muted-foreground">
+                  <span class="sr-only">Search conversations</span>
+                  <app-icon name="search" className="h-4 w-4" />
+                  <input name="conversationSearch" [(ngModel)]="conversationSearch" class="flex-1 bg-transparent outline-none text-foreground" placeholder="Search" autocomplete="off" />
+                </label>
               </div>
               <div>
-                @for (conversation of conversations; track conversation.id) {
+                @for (conversation of filteredConversations; track conversation.id) {
                   <button type="button" (click)="selectConversation(conversation)" class="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-white/5" [class.bg-white/5]="selected.id === conversation.id">
                     <img [src]="conversation.photoUrl" [alt]="conversation.personName" class="h-12 w-12 rounded-full object-cover" />
                     <div class="min-w-0 flex-1"><div class="font-semibold truncate">{{ conversation.personName }}</div><div class="text-sm text-muted-foreground truncate">{{ conversation.lastMessage }}</div></div>
@@ -52,9 +56,9 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
                     <span [class.text-success]="connectionStatus === 'live'">{{ connectionLabel }}</span>
                   </div>
                 </div>
-                <app-icon name="phone" className="h-5 w-5 text-muted-foreground" />
-                <app-icon name="video" className="h-5 w-5 text-muted-foreground" />
-                <app-icon name="ellipsis" className="h-5 w-5 text-muted-foreground" />
+                <button type="button" class="premium-icon-btn" disabled aria-label="Voice calls coming soon" title="Voice calls coming soon"><app-icon name="phone" className="h-5 w-5" /></button>
+                <button type="button" class="premium-icon-btn" disabled aria-label="Video calls coming soon" title="Video calls coming soon"><app-icon name="video" className="h-5 w-5" /></button>
+                <button type="button" class="premium-icon-btn" disabled aria-label="Conversation options coming soon" title="Conversation options coming soon"><app-icon name="ellipsis" className="h-5 w-5" /></button>
               </header>
               <div class="flex-1 overflow-auto p-8">
                 @if (selected.messages.length === 0) {
@@ -76,8 +80,8 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
                   <div class="mb-3 rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-100">{{ errorMessage }}</div>
                 }
                 <form (ngSubmit)="sendMessage()" class="glass rounded-3xl px-5 py-3 flex items-center gap-4">
-                  <app-icon name="paperclip" className="h-5 w-5 text-muted-foreground" />
-                  <input name="message" [(ngModel)]="draftMessage" maxlength="2000" autocomplete="off" class="flex-1 bg-transparent outline-none text-foreground" placeholder="Type a message..." />
+                  <button type="button" class="premium-icon-btn" disabled aria-label="Attachments coming soon" title="Attachments coming soon"><app-icon name="paperclip" className="h-5 w-5" /></button>
+                  <input name="message" [(ngModel)]="draftMessage" maxlength="2000" autocomplete="off" aria-label="Message body" class="flex-1 bg-transparent outline-none text-foreground" placeholder="Type a message..." />
                   <button type="submit" [disabled]="isSending || !draftMessage.trim()" class="h-10 w-10 rounded-full bg-primary-gradient grid place-items-center text-primary-foreground disabled:opacity-50" aria-label="Send message"><app-icon name="send" className="h-5 w-5" /></button>
                 </form>
                 <div class="flex justify-center items-center gap-2 text-xs text-muted-foreground mt-3"><app-icon name="shield-check" className="h-3.5 w-3.5 text-success" /> All chats are monitored for safety. Never share payment outside Mentora.</div>
@@ -100,6 +104,7 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
 export class MessagesComponent implements OnInit, OnDestroy {
   conversations: Conversation[] = [];
   selected?: Conversation;
+  conversationSearch = '';
   draftMessage = '';
   errorMessage = '';
   isLoading = true;
@@ -196,6 +201,17 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   get emptyInboxDescription(): string {
     return this.isTutor ? 'New student or parent enquiries will appear here.' : 'Choose a verified teacher and send a message to begin.';
+  }
+
+  get filteredConversations(): Conversation[] {
+    const query = this.conversationSearch.trim().toLowerCase();
+    if (!query) {
+      return this.conversations;
+    }
+
+    return this.conversations.filter(conversation =>
+      conversation.personName.toLowerCase().includes(query)
+      || conversation.lastMessage.toLowerCase().includes(query));
   }
 
   async sendMessage(): Promise<void> {

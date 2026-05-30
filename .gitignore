@@ -7,6 +7,9 @@ out/
 out-tsc/
 tmp/
 coverage/
+test-results/
+playwright-report/
+artifacts/
 
 # Node and Angular
 node_modules/
@@ -17,6 +20,7 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Runtime logs
+logs/
 *.log
 *.out.log
 *.err.log

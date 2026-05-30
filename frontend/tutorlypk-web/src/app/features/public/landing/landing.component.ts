@@ -50,7 +50,7 @@ import { TutorCardComponent } from '../../../shared/components/tutor-card/tutor-
 
           <div class="flex flex-wrap gap-3 mt-5">
             <a routerLink="/tutors" class="text-sm px-4 py-2.5 rounded-xl border border-white/10 hover:bg-white/5">Browse 1,200+ tutors</a>
-            <a routerLink="/role" class="text-sm px-4 py-2.5 rounded-xl border border-white/10 hover:bg-white/5">Join as Tutor →</a>
+            <a routerLink="/role" class="text-sm px-4 py-2.5 rounded-xl border border-white/10 hover:bg-white/5">Join as Tutor -></a>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-10 pt-8 border-t border-white/5">
@@ -61,22 +61,39 @@ import { TutorCardComponent } from '../../../shared/components/tutor-card/tutor-
           </div>
         </div>
 
-        <div class="relative h-[560px] hidden lg:block">
-          <div class="absolute glass-strong rounded-2xl p-4 w-64 shadow-card top-0 right-8 animate-float">
+        <div class="landing-showcase hidden lg:block">
+          <div class="landing-ai-card animate-float">
             <div class="flex items-center gap-2 text-xs text-cyan mb-2"><app-icon name="sparkles" className="h-3 w-3" /> AI MATCH</div>
             <div class="font-display font-semibold">98% match for A Levels Math</div>
             <p class="text-xs text-muted-foreground mt-1">Ayesha M. - Lahore, 8 yrs exp.</p>
             <div class="mt-3 h-1.5 rounded-full bg-white/5 overflow-hidden"><div class="h-full w-[98%] bg-aurora animate-shimmer"></div></div>
           </div>
           @for (tutor of tutors.slice(0, 2); track tutor.id; let i = $index) {
-            <div class="absolute w-72 animate-float-slow" [class.top-32]="i === 0" [class.left-0]="i === 0" [class.top-64]="i === 1" [class.right-0]="i === 1">
-              <app-tutor-card [tutor]="tutor" />
+            <div class="landing-mini-card animate-float-slow" [class.landing-mini-card-a]="i === 0" [class.landing-mini-card-b]="i === 1">
+              <div class="flex items-start gap-4">
+                <div class="landing-mini-avatar">{{ tutor.initials }}</div>
+                <div class="min-w-0 flex-1">
+                  <div class="font-display font-semibold truncate">{{ tutor.name }}</div>
+                  <div class="text-xs text-muted-foreground truncate">{{ tutor.tagline }}</div>
+                  <div class="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                    <span class="flex items-center gap-1"><app-icon name="star" className="h-3.5 w-3.5 fill-warning text-warning" /> <b class="text-foreground">{{ tutor.rating }}</b> ({{ tutor.reviews }})</span>
+                    <span>{{ tutor.city }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 border-t border-white/5 pt-4 flex items-end justify-between gap-3">
+                <div>
+                  <div class="font-display font-bold leading-tight">{{ tutor.feeText }}</div>
+                  <div class="text-xs text-muted-foreground">{{ tutor.nextSlot }}</div>
+                </div>
+                <a [routerLink]="['/book', tutor.id]" class="premium-btn premium-btn--primary premium-btn--compact">Book Demo</a>
+              </div>
             </div>
           }
-          <div class="absolute glass-strong rounded-2xl p-4 w-64 shadow-card bottom-4 left-12">
+          <div class="landing-demo-card">
             <div class="flex items-center gap-2 text-xs text-success mb-1"><app-icon name="calendar" className="h-3 w-3" /> DEMO BOOKED</div>
             <div class="font-semibold">Today, 6:00 PM</div>
-            <div class="text-xs text-muted-foreground">Free 30-min trial · No commitment</div>
+            <div class="text-xs text-muted-foreground">Free 30-min trial - No commitment</div>
           </div>
         </div>
       </div>
@@ -126,7 +143,7 @@ import { TutorCardComponent } from '../../../shared/components/tutor-card/tutor-
     <section class="mx-auto max-w-7xl px-6 py-24">
       <div class="flex items-end justify-between mb-8">
         <div><div class="text-xs text-primary uppercase tracking-wider mb-2">+ TOP RATED</div><h2 class="font-display text-3xl sm:text-4xl font-bold">This week's best tutors</h2></div>
-        <a routerLink="/tutors" class="text-sm text-muted-foreground">See all →</a>
+        <a routerLink="/tutors" class="text-sm text-muted-foreground">See all -></a>
       </div>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         @for (tutor of tutors; track tutor.id) {
@@ -138,7 +155,7 @@ import { TutorCardComponent } from '../../../shared/components/tutor-card/tutor-
     <section class="mx-auto max-w-7xl px-6 py-24 text-center">
       <div class="inline-flex glass rounded-full px-3 py-1 text-xs text-primary mb-4">+ TRUST</div>
       <h2 class="font-display text-3xl sm:text-5xl font-bold tracking-tight max-w-3xl mx-auto">Built for parents who can't afford to trust random tutors.</h2>
-      <p class="text-muted-foreground mt-4">Every safeguard a parent would build themselves — if they had the time.</p>
+      <p class="text-muted-foreground mt-4">Every safeguard a parent would build themselves - if they had the time.</p>
       <div class="grid md:grid-cols-4 gap-4 mt-12 text-left">
         @for (trust of trustCards; track trust.title) {
           <div class="glass-strong rounded-2xl p-5"><app-icon [name]="trust.icon" className="h-5 w-5 text-cyan mb-4" /><h3 class="font-semibold">{{ trust.title }}</h3><p class="text-xs text-muted-foreground mt-1">{{ trust.body }}</p></div>
@@ -167,7 +184,7 @@ import { TutorCardComponent } from '../../../shared/components/tutor-card/tutor-
 
     <section class="mx-auto max-w-7xl px-6 py-24 text-center">
       <h2 class="font-display text-3xl sm:text-5xl font-bold tracking-tight">From Karachi to Quetta.</h2>
-      <p class="text-muted-foreground mt-3">Verified tutors in every major Pakistani city — and growing fast.</p>
+      <p class="text-muted-foreground mt-3">Verified tutors in every major Pakistani city - and growing fast.</p>
       <div class="flex flex-wrap justify-center gap-3 mt-8">
         @for (city of cities; track city.code) {
           <span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm"><app-icon name="map-pin" className="h-3.5 w-3.5 text-primary" /> {{ city.name }}</span>
@@ -189,7 +206,7 @@ import { TutorCardComponent } from '../../../shared/components/tutor-card/tutor-
       <h2 class="font-display text-3xl sm:text-5xl font-bold tracking-tight max-w-3xl mx-auto">Real Pakistani families. Real results.</h2>
       <div class="grid md:grid-cols-3 gap-5 mt-12 text-left">
         @for (story of stories; track story.name) {
-          <div class="glass-strong rounded-3xl p-7 shadow-card"><div class="text-warning mb-3">★★★★★</div><p class="leading-relaxed">"{{ story.quote }}"</p><div class="mt-6 pt-6 border-t border-white/5"><div class="font-semibold">{{ story.name }}</div><div class="text-xs text-muted-foreground">{{ story.role }} · {{ story.city }}</div></div></div>
+          <div class="glass-strong rounded-3xl p-7 shadow-card"><div class="text-warning mb-3">*****</div><p class="leading-relaxed">"{{ story.quote }}"</p><div class="mt-6 pt-6 border-t border-white/5"><div class="font-semibold">{{ story.name }}</div><div class="text-xs text-muted-foreground">{{ story.role }} - {{ story.city }}</div></div></div>
         }
       </div>
     </section>
@@ -231,7 +248,7 @@ export class LandingComponent implements OnInit {
     { icon: 'clock', title: 'Response time tracking', body: 'We measure every reply' },
   ];
   steps = [
-    { no: '01', title: 'Tell us what you need', body: 'Subject, class, city, budget — 30 seconds.' },
+    { no: '01', title: 'Tell us what you need', body: 'Subject, class, city, budget - 30 seconds.' },
     { no: '02', title: 'Get AI-matched tutors', body: 'Top 3 verified tutors, ranked by fit and results.' },
     { no: '03', title: 'Book a demo class', body: 'Try a free 30-min session. Pay only when convinced.' },
   ];

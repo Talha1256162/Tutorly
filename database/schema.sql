@@ -176,9 +176,9 @@ create table demoBookings
     BookingDate date not null,
     BookingTime nvarchar(40) not null,
     TeachingModeCode nvarchar(80) not null,
-    StudentName nvarchar(180) null,
-    ParentPhone nvarchar(60) null,
-    LearningGoal nvarchar(max) null,
+    StudentName nvarchar(180) not null,
+    ParentPhone nvarchar(60) not null,
+    LearningGoal nvarchar(max) not null,
     StatusCode nvarchar(80) not null,
     CreatedAtUtc datetime2 not null constraint DF_demoBookings_CreatedAtUtc default sysutcdatetime(),
     CreatedByUserId uniqueidentifier not null

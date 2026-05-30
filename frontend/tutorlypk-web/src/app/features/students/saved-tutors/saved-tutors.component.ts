@@ -15,7 +15,14 @@ import { TutorCardComponent } from '../../../shared/components/tutor-card/tutor-
         <p class="text-muted-foreground mt-2">Quickly compare profiles, response times, fees, and available demo slots.</p>
       </div>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
-        @for (tutor of tutors; track tutor.id) { <app-tutor-card [tutor]="tutor" /> }
+        @for (tutor of tutors; track tutor.id) {
+          <app-tutor-card [tutor]="tutor" [saved]="true" (removed)="removeTutor($event)" />
+        } @empty {
+          <div class="glass-strong rounded-3xl p-10 text-center md:col-span-2 lg:col-span-3">
+            <h2 class="font-display text-2xl font-semibold">No saved tutors yet</h2>
+            <p class="text-muted-foreground mt-2">Use the heart button on tutor cards to keep your shortlist here.</p>
+          </div>
+        }
       </div>
     </section>
   `,
@@ -28,5 +35,10 @@ export class SavedTutorsComponent implements OnInit {
       this.tutors = tutors;
       this.cdr.detectChanges();
     });
+  }
+
+  removeTutor(tutorId: string): void {
+    this.tutors = this.tutors.filter(tutor => tutor.id !== tutorId);
+    this.cdr.detectChanges();
   }
 }

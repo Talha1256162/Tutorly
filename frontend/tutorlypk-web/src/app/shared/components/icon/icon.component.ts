@@ -10,6 +10,7 @@ import {
   LucideGraduationCap,
   LucideHeart,
   LucideHouse,
+  LucideLogOut,
   LucideMapPin,
   LucideMenu,
   LucideMessageCircle,
@@ -43,6 +44,7 @@ import {
     LucideGraduationCap,
     LucideHeart,
     LucideHouse,
+    LucideLogOut,
     LucideMapPin,
     LucideMenu,
     LucideMessageCircle,
@@ -73,6 +75,7 @@ import {
       @case ('graduation-cap') { <svg lucideGraduationCap [class]="className" aria-hidden="true"></svg> }
       @case ('heart') { <svg lucideHeart [class]="className" aria-hidden="true"></svg> }
       @case ('house') { <svg lucideHouse [class]="className" aria-hidden="true"></svg> }
+      @case ('log-out') { <svg lucideLogOut [class]="className" aria-hidden="true"></svg> }
       @case ('map-pin') { <svg lucideMapPin [class]="className" aria-hidden="true"></svg> }
       @case ('menu') { <svg lucideMenu [class]="className" aria-hidden="true"></svg> }
       @case ('message-circle') { <svg lucideMessageCircle [class]="className" aria-hidden="true"></svg> }

@@ -9,38 +9,92 @@ import { AuthService } from '../../../core/auth/auth.service';
   standalone: true,
   imports: [RouterLink, FormsModule, IconComponent],
   template: `
-    <main class="min-h-screen relative overflow-hidden grid place-items-start justify-center px-6 py-12">
-      <div class="absolute inset-0 bg-hero-gradient opacity-70"></div>
-      <div class="relative w-full max-w-2xl">
-        <a routerLink="/" class="flex items-center gap-3 mb-10">
-          <div class="h-10 w-10 rounded-full bg-primary-gradient grid place-items-center"><app-icon name="sparkles" className="h-5 w-5 text-primary-foreground" /></div>
-          <span class="font-display font-bold text-2xl">Mentora</span>
-        </a>
-        <section class="glass-strong rounded-3xl p-8 sm:p-12 shadow-card">
-          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
-            <div>
-              <div class="text-xs uppercase tracking-wider text-cyan mb-2">{{ roleBadge }}</div>
-              <h1 class="font-display text-3xl font-bold">Create {{ roleTitle }} account</h1>
-              <p class="mt-2 text-sm text-muted-foreground">{{ roleDescription }}</p>
+    <main class="premium-auth">
+      <div class="auth-grid">
+        <section class="auth-showcase">
+          <a routerLink="/" class="auth-brand" aria-label="Mentora home">
+            <span class="auth-brand-mark"><app-icon name="sparkles" className="h-5 w-5" /></span>
+            <span class="text-2xl">Mentora</span>
+          </a>
+
+          <div class="auth-copy">
+            <div class="premium-kicker"><app-icon name="graduation-cap" className="h-3.5 w-3.5" /> {{ roleBadge }}</div>
+            <h1>{{ role === 'tutor' ? 'Build a teacher profile families can trust.' : 'Create a family workspace for better tutor decisions.' }}</h1>
+            <p>{{ roleDescription }}</p>
+
+            <div class="auth-metrics">
+              <div class="auth-metric"><strong>1</strong><span>clear profile and verified identity</span></div>
+              <div class="auth-metric"><strong>3</strong><span>learning signals before booking</span></div>
+              <div class="auth-metric"><strong>0</strong><span>pressure before a demo class</span></div>
             </div>
-            <a routerLink="/role" class="text-sm text-muted-foreground">Change role</a>
           </div>
-          <form class="space-y-6" (ngSubmit)="submit()">
-            <label class="block"><span class="text-xs uppercase tracking-wider text-muted-foreground">{{ nameLabel }}</span><input name="fullName" [(ngModel)]="form.fullName" class="mt-2 w-full rounded-3xl bg-white/5 border border-white/10 px-5 py-4 outline-none text-muted-foreground" [placeholder]="namePlaceholder" /></label>
-            <label class="block"><span class="text-xs uppercase tracking-wider text-muted-foreground">Phone</span><input name="phone" [(ngModel)]="form.phone" class="mt-2 w-full rounded-3xl bg-white/5 border border-white/10 px-5 py-4 outline-none text-muted-foreground" placeholder="+92 3xx xxxxxxx" /></label>
-            <label class="block"><span class="text-xs uppercase tracking-wider text-muted-foreground">Email</span><input name="email" [(ngModel)]="form.email" class="mt-2 w-full rounded-3xl bg-white/5 border border-white/10 px-5 py-4 outline-none text-muted-foreground" placeholder="you@example.com" /></label>
-            <label class="block"><span class="text-xs uppercase tracking-wider text-muted-foreground">Password</span><input name="password" [(ngModel)]="form.password" type="password" class="mt-2 w-full rounded-3xl bg-white/5 border border-white/10 px-5 py-4 outline-none text-muted-foreground" /></label>
-            <div class="rounded-3xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm text-muted-foreground">{{ setupNote }}</div>
-            @if (errorMessage) {
-              <div class="rounded-3xl border border-red-400/30 bg-red-500/10 px-5 py-3 text-sm text-red-100">{{ errorMessage }}</div>
-            }
-            <div class="flex items-center justify-between pt-4">
-              <a routerLink="/role" class="text-muted-foreground">Back</a>
-              <button type="submit" [disabled]="isSubmitting" class="rounded-3xl bg-primary-gradient px-8 py-3.5 font-semibold text-primary-foreground shadow-glow disabled:opacity-70">{{ isSubmitting ? 'Creating...' : 'Create account' }}</button>
+
+          <div class="auth-testimonial">
+            <p>{{ setupNote }}</p>
+            <div class="auth-person">
+              <span class="auth-avatar"></span>
+              <div>
+                <div class="font-semibold">{{ roleHeading }} setup</div>
+                <div class="text-sm text-muted-foreground">Mentora Pakistan</div>
+              </div>
             </div>
-          </form>
+          </div>
         </section>
-        <div class="text-center text-muted-foreground mt-8">Already have an account? <a routerLink="/login" class="text-primary font-semibold">Sign in</a></div>
+
+        <section class="auth-form-stage">
+          <div class="auth-panel">
+            <a routerLink="/" class="auth-brand-mobile" aria-label="Mentora home">
+              <span class="auth-brand-mark"><app-icon name="sparkles" className="h-5 w-5" /></span>
+              <span class="text-2xl">Mentora</span>
+            </a>
+
+            <div class="flex items-center justify-between gap-4">
+              <div class="premium-kicker">{{ roleBadge }}</div>
+              <a routerLink="/role" class="auth-link text-sm">Change role</a>
+            </div>
+            <h1 class="mt-5">Create {{ roleTitle }} account</h1>
+            <p class="mt-3">{{ roleDescription }}</p>
+
+            <form class="auth-form" (ngSubmit)="submit()">
+              <label class="premium-field">
+                <span>{{ nameLabel }}</span>
+                <input name="fullName" [(ngModel)]="form.fullName" autocomplete="name" [placeholder]="namePlaceholder" />
+              </label>
+
+              <div class="grid md:grid-cols-2 gap-3">
+                <label class="premium-field">
+                  <span>Phone</span>
+                  <input name="phone" [(ngModel)]="form.phone" autocomplete="tel" placeholder="+92 3xx xxxxxxx" />
+                </label>
+
+                <label class="premium-field">
+                  <span>Email</span>
+                  <input name="email" [(ngModel)]="form.email" autocomplete="email" placeholder="you@example.com" />
+                </label>
+              </div>
+
+              <label class="premium-field">
+                <span>Password</span>
+                <input name="password" [(ngModel)]="form.password" type="password" autocomplete="new-password" placeholder="Create a secure password" />
+              </label>
+
+              <div class="premium-note">{{ setupNote }}</div>
+
+              @if (errorMessage) {
+                <div class="auth-error">{{ errorMessage }}</div>
+              }
+
+              <div class="flex items-center justify-between gap-3 pt-2">
+                <a routerLink="/role" class="premium-btn premium-btn--secondary">Back</a>
+                <button type="submit" [disabled]="isSubmitting" class="premium-btn premium-btn--primary">
+                  {{ isSubmitting ? 'Creating...' : 'Create account' }}
+                </button>
+              </div>
+            </form>
+
+            <div class="auth-footer">Already have an account? <a routerLink="/login" class="auth-link">Sign in</a></div>
+          </div>
+        </section>
       </div>
     </main>
   `,
@@ -71,15 +125,19 @@ export class RegisterComponent implements OnInit {
     return this.role === 'tutor' ? 'teacher' : 'student / parent';
   }
 
+  get roleHeading(): string {
+    return this.role === 'tutor' ? 'Teacher' : 'Student / Parent';
+  }
+
   get roleBadge(): string {
     return this.role === 'tutor' ? 'Teacher portal' : 'Student / Parent workspace';
   }
 
   get roleDescription(): string {
     if (this.role === 'tutor') {
-      return 'Build your verified tutor profile and manage student requests.';
+      return 'Build your verified tutor profile and manage student requests from one polished portal.';
     }
-    return 'Find trusted teachers, book demos, and manage the learning journey.';
+    return 'Find trusted teachers, book demos, run Tutorly Insight, and manage the learning journey.';
   }
 
   get nameLabel(): string {
@@ -94,7 +152,7 @@ export class RegisterComponent implements OnInit {
     if (this.role === 'tutor') {
       return 'Next, you can complete subjects, availability, fees, and verification before receiving bookings.';
     }
-    return 'Your dashboard focuses on teacher matches, upcoming classes, messages, and progress.';
+    return 'Your dashboard focuses on teacher matches, upcoming classes, Tutorly Insight, messages, and progress.';
   }
 
   submit(): void {

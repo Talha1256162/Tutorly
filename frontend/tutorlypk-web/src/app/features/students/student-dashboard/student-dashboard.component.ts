@@ -14,19 +14,38 @@ import { TutorCardComponent } from '../../../shared/components/tutor-card/tutor-
   template: `
     @if (dashboard) {
       <section class="mx-auto max-w-7xl px-6 py-8">
-        <div class="glass-strong rounded-3xl p-8 shadow-card bg-hero-gradient">
+        <div class="glass-strong rounded-3xl p-8 shadow-card bg-hero-gradient premium-dashboard-hero">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
               <div class="text-cyan text-xs font-bold uppercase tracking-wider mb-2"><app-icon name="sparkles" className="h-3 w-3 inline-block mr-1" /> {{ workspaceLabel }}</div>
               <h1 class="font-display text-4xl font-bold">{{ dashboard.headline }}</h1>
               <p class="text-muted-foreground mt-2">{{ dashboard.subheadline }}</p>
             </div>
-            <a routerLink="/tutors" class="inline-flex items-center gap-2 rounded-xl bg-primary-gradient px-6 py-3.5 font-semibold text-primary-foreground shadow-glow">{{ findTutorLabel }}</a>
+            <div class="flex flex-wrap gap-3">
+              <a routerLink="/insight/diagnostic" class="premium-btn premium-btn--primary">
+                <app-icon name="sparkles" className="h-4 w-4" />
+                Tutorly Insight
+              </a>
+              <a routerLink="/tutors" class="premium-btn premium-btn--secondary">{{ findTutorLabel }}</a>
+            </div>
           </div>
         </div>
         <div class="grid md:grid-cols-4 gap-5 mt-8">
           @for (stat of dashboard.stats; track stat.label) { <app-stats-card [stat]="stat" /> }
         </div>
+        <section class="glass-strong rounded-3xl p-7 shadow-card mt-8">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+            <div>
+              <div class="text-cyan text-xs font-bold uppercase tracking-wider mb-2">Tutorly Insight</div>
+              <h2 class="font-display text-2xl font-semibold">Check the real learning level before choosing a tutor.</h2>
+              <p class="text-muted-foreground mt-2">Run a short diagnostic test, get a learning gap report, and see matched tutors for weak topics.</p>
+            </div>
+            <a routerLink="/insight/diagnostic" class="premium-btn premium-btn--primary">
+              Start level check
+              <app-icon name="arrow-right" className="h-4 w-4" />
+            </a>
+          </div>
+        </section>
         <div class="grid lg:grid-cols-[1.4fr_1fr] gap-6 mt-8">
           <div class="space-y-6">
             <section class="glass-strong rounded-3xl p-7 shadow-card">
@@ -44,7 +63,7 @@ import { TutorCardComponent } from '../../../shared/components/tutor-card/tutor-
             <section class="glass-strong rounded-3xl p-7 shadow-card">
               <h2 class="font-display text-xl font-semibold mb-5">{{ demoLabel }}</h2>
               @for (demo of dashboard.upcomingDemos; track demo.tutorName) {
-                <div class="glass rounded-3xl p-4 flex items-center gap-4 mb-4"><img [src]="demo.tutorPhotoUrl" class="h-12 w-12 rounded-2xl object-cover" /><div class="flex-1"><div class="font-semibold">{{ demo.tutorName }}</div><div class="text-sm text-muted-foreground">{{ demo.subject }} - {{ demo.startsAt }}</div></div><button class="rounded-2xl bg-primary-gradient px-5 py-2 font-semibold text-primary-foreground">{{ demo.actionLabel }}</button></div>
+                <div class="glass rounded-3xl p-4 flex items-center gap-4 mb-4"><img [src]="demo.tutorPhotoUrl" class="h-12 w-12 rounded-2xl object-cover" /><div class="flex-1"><div class="font-semibold">{{ demo.tutorName }}</div><div class="text-sm text-muted-foreground">{{ demo.subject }} - {{ demo.startsAt }}</div></div><button class="premium-btn premium-btn--primary premium-btn--compact">{{ demo.actionLabel }}</button></div>
               }
             </section>
             <section class="glass-strong rounded-3xl p-7 shadow-card">

@@ -9,55 +9,82 @@ import { AuthService } from '../../../core/auth/auth.service';
   standalone: true,
   imports: [RouterLink, FormsModule, IconComponent],
   template: `
-    <main class="min-h-screen grid lg:grid-cols-2 bg-background">
-      <section class="relative hidden lg:flex flex-col justify-between p-14 overflow-hidden">
-        <div class="absolute inset-0 bg-hero-gradient"></div>
-        <div class="absolute inset-0 noise"></div>
-        <a routerLink="/" class="relative flex items-center gap-3">
-          <div class="h-10 w-10 rounded-full bg-primary-gradient grid place-items-center"><app-icon name="sparkles" className="h-5 w-5 text-primary-foreground" /></div>
-          <span class="font-display font-bold text-2xl">Mentora</span>
-        </a>
-        <div class="relative max-w-lg">
-          <h1 class="font-display text-5xl font-bold leading-tight">"Mentora replaced 8 weeks of WhatsApp pain with one perfect tutor."</h1>
-          <div class="flex items-center gap-4 mt-8">
-            <div class="h-12 w-12 rounded-full bg-aurora"></div>
-            <div><div class="font-semibold">Asma T.</div><div class="text-sm text-muted-foreground">Parent · Lahore</div></div>
-          </div>
-        </div>
-        <div class="relative text-sm text-muted-foreground">© 2026 Mentora · Pakistan</div>
-      </section>
-
-      <section class="grid place-items-center px-6">
-        <div class="w-full max-w-md">
-          <a routerLink="/" class="lg:hidden flex items-center gap-3 mb-12">
-            <div class="h-10 w-10 rounded-full bg-primary-gradient grid place-items-center"><app-icon name="sparkles" className="h-5 w-5 text-primary-foreground" /></div>
-            <span class="font-display font-bold text-2xl">Mentora</span>
+    <main class="premium-auth">
+      <div class="auth-grid">
+        <section class="auth-showcase">
+          <a routerLink="/" class="auth-brand" aria-label="Mentora home">
+            <span class="auth-brand-mark"><app-icon name="sparkles" className="h-5 w-5" /></span>
+            <span class="text-2xl">Mentora</span>
           </a>
-          <h1 class="font-display text-4xl font-bold">Welcome back</h1>
-          <p class="text-muted-foreground mt-2">Sign in to continue your learning journey.</p>
-          <form class="mt-10 space-y-6" (ngSubmit)="submit()">
-            <label class="block">
-              <span class="text-xs uppercase tracking-wider text-muted-foreground">Email or phone</span>
-              <input name="emailOrPhone" [(ngModel)]="form.emailOrPhone" class="mt-2 w-full rounded-3xl bg-white/5 border border-white/10 px-5 py-4 outline-none text-muted-foreground" placeholder="you@example.com" />
-            </label>
-            <label class="block">
-              <span class="text-xs uppercase tracking-wider text-muted-foreground">Password</span>
-              <input name="password" [(ngModel)]="form.password" type="password" class="mt-2 w-full rounded-3xl bg-white/5 border border-white/10 px-5 py-4 outline-none text-muted-foreground" />
-            </label>
-            <div class="flex items-center justify-between text-sm">
-              <label class="flex items-center gap-2 text-muted-foreground"><input type="checkbox" /> Remember me</label>
-              <a class="text-primary">Forgot password?</a>
+
+          <div class="auth-copy">
+            <div class="premium-kicker"><app-icon name="shield-check" className="h-3.5 w-3.5" /> Verified tutor marketplace</div>
+            <h1>Match with a tutor who understands the exact learning gap.</h1>
+            <p>Mentora brings diagnostic insight, verified teacher profiles, demos, messages, and parent-ready progress into one calm workspace.</p>
+
+            <div class="auth-metrics">
+              <div class="auth-metric"><strong>7k+</strong><span>families guided across Pakistan</span></div>
+              <div class="auth-metric"><strong>92%</strong><span>parents shortlist faster after Insight</span></div>
+              <div class="auth-metric"><strong>24h</strong><span>typical verified tutor response time</span></div>
             </div>
-            @if (errorMessage) {
-              <div class="rounded-3xl border border-red-400/30 bg-red-500/10 px-5 py-3 text-sm text-red-100">{{ errorMessage }}</div>
-            }
-            <button type="submit" [disabled]="isSubmitting" class="w-full rounded-3xl bg-primary-gradient px-5 py-4 font-semibold text-primary-foreground shadow-glow disabled:opacity-70">{{ isSubmitting ? 'Signing in...' : 'Sign in' }}</button>
-          </form>
-          <div class="my-6 flex items-center gap-4 text-xs text-muted-foreground"><div class="h-px flex-1 bg-white/10"></div>OR<div class="h-px flex-1 bg-white/10"></div></div>
-          <button class="w-full rounded-3xl border border-white/10 bg-white/5 px-5 py-4 font-semibold">Continue with Google</button>
-          <div class="text-center text-muted-foreground mt-8">New to Mentora? <a routerLink="/role" class="text-primary font-semibold">Create account</a></div>
-        </div>
-      </section>
+          </div>
+
+          <div class="auth-testimonial">
+            <p>"Mentora replaced weeks of scattered WhatsApp chats with one clear teacher match and a proper learning plan."</p>
+            <div class="auth-person">
+              <span class="auth-avatar"></span>
+              <div>
+                <div class="font-semibold">Asma T.</div>
+                <div class="text-sm text-muted-foreground">Parent, Lahore</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="auth-form-stage">
+          <div class="auth-panel">
+            <a routerLink="/" class="auth-brand-mobile" aria-label="Mentora home">
+              <span class="auth-brand-mark"><app-icon name="sparkles" className="h-5 w-5" /></span>
+              <span class="text-2xl">Mentora</span>
+            </a>
+            <div class="premium-kicker"><app-icon name="sparkles" className="h-3.5 w-3.5" /> Secure family workspace</div>
+            <h1 class="mt-5">Welcome back</h1>
+            <p class="mt-3">Sign in to continue with Tutorly Insight, demos, saved tutors, and teacher messages.</p>
+
+            <form class="auth-form" (ngSubmit)="submit()">
+              <label class="premium-field">
+                <span>Email or phone</span>
+                <input name="emailOrPhone" [(ngModel)]="form.emailOrPhone" autocomplete="username" placeholder="you@example.com" />
+              </label>
+
+              <label class="premium-field">
+                <span>Password</span>
+                <input name="password" [(ngModel)]="form.password" type="password" autocomplete="current-password" placeholder="Enter your password" />
+              </label>
+
+              <div class="auth-row">
+                <label class="flex items-center gap-2"><input type="checkbox" /> Remember me</label>
+                <button type="button" class="auth-link" (click)="showPasswordResetHelp()">Forgot password?</button>
+              </div>
+
+              @if (errorMessage) {
+                <div class="auth-error">{{ errorMessage }}</div>
+              }
+              @if (infoMessage) {
+                <div class="auth-info">{{ infoMessage }}</div>
+              }
+
+              <button type="submit" [disabled]="isSubmitting" class="premium-btn premium-btn--primary w-full">
+                {{ isSubmitting ? 'Signing in...' : 'Sign in' }}
+              </button>
+            </form>
+
+            <div class="auth-divider">OR</div>
+            <button type="button" class="premium-btn premium-btn--secondary w-full" disabled title="Google sign-in is coming soon">Google sign-in coming soon</button>
+            <div class="auth-footer">New to Mentora? <a routerLink="/role" class="auth-link">Create account</a></div>
+          </div>
+        </section>
+      </div>
     </main>
   `,
 })
@@ -68,6 +95,7 @@ export class LoginComponent {
   };
   isSubmitting = false;
   errorMessage = '';
+  infoMessage = '';
 
   constructor(
     private readonly authService: AuthService,
@@ -77,6 +105,7 @@ export class LoginComponent {
 
   submit(): void {
     this.errorMessage = '';
+    this.infoMessage = '';
     this.isSubmitting = true;
 
     this.authService.login(this.form).subscribe({
@@ -92,5 +121,10 @@ export class LoginComponent {
         this.isSubmitting = false;
       },
     });
+  }
+
+  showPasswordResetHelp(): void {
+    this.errorMessage = '';
+    this.infoMessage = 'Password reset is being set up. For now, contact support to reset your account.';
   }
 }

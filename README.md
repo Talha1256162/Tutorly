@@ -17,6 +17,7 @@ dotnet run --project backend/Tutorly.Api/Tutorly.Api.csproj
 ```
 
 The API uses `backend/Tutorly.Api/appsettings.json` for local SQL Server and JWT configuration. Replace the placeholder JWT signing key before production use.
+If a Debug build fails because `Tutorly.Api.exe` is locked, stop the running local API process or build with `-c Release`.
 
 ## Frontend
 
@@ -26,6 +27,12 @@ npm install
 npm start
 ```
 
+Run the Playwright smoke regression with:
+
+```bash
+npm test
+```
+
 ## Database
 
-Run the scripts in `database/schema.sql` and `database/seed.sql` against the configured SQL Server database.
+Run `database/schema.sql` and `database/seed.sql` against a fresh database. For existing databases, apply the numbered scripts in `database/migrations/` in order.

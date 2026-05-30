@@ -12,14 +12,16 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
   imports: [FilterSidebarComponent, SearchBarComponent, TutorCardComponent, IconComponent],
   template: `
     <section class="mx-auto max-w-7xl px-6 py-6">
-      <app-search-bar [sort]="query.sort ?? 'top-rated'" (searchChange)="search($event)" (sortChange)="sort($event)" />
+      <app-search-bar [value]="query.search ?? ''" [sort]="query.sort ?? 'top-rated'" (searchChange)="search($event)" (sortChange)="sort($event)" />
 
       <div class="grid lg:grid-cols-[280px_1fr] gap-6 mt-8">
         <app-filter-sidebar class="hidden lg:block" [lookup]="lookups" [resetVersion]="filterResetVersion" (filtersChange)="applyFilters($event)" />
         <div>
           <div class="flex items-center justify-between mb-5">
             <h1 class="font-display text-4xl font-bold">{{ tutors.length }} tutors</h1>
-            <div class="hidden md:flex items-center gap-2 text-cyan text-sm font-semibold"><app-icon name="sparkles" className="h-4 w-4" /> 3 AI-recommended for you</div>
+            @if (tutors.length > 0) {
+              <div class="hidden md:flex items-center gap-2 text-cyan text-sm font-semibold"><app-icon name="sparkles" className="h-4 w-4" /> {{ recommendedCount }} AI-recommended for you</div>
+            }
           </div>
           @if (activeFilters.length) {
             <div class="flex flex-wrap items-center gap-2 mb-5">
@@ -37,6 +39,7 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
                 <app-icon name="search" className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
                 <h2 class="font-display text-2xl font-semibold">No tutors matched</h2>
                 <p class="text-muted-foreground mt-2">Try removing a filter or searching a broader subject.</p>
+                <button type="button" class="mt-5 premium-btn premium-btn--secondary" (click)="clearFilters()">Clear filters</button>
               </div>
             }
           </div>
@@ -77,7 +80,7 @@ export class BrowseTutorsComponent implements OnInit {
   }
 
   clearFilters(): void {
-    this.query = { search: this.query.search, sort: this.query.sort ?? 'top-rated' };
+    this.query = { search: '', sort: this.query.sort ?? 'top-rated' };
     this.filterResetVersion += 1;
     this.loadTutors();
   }
@@ -97,6 +100,10 @@ export class BrowseTutorsComponent implements OnInit {
     }
 
     return values;
+  }
+
+  get recommendedCount(): number {
+    return Math.min(3, this.tutors.length);
   }
 
   private loadTutors(): void {

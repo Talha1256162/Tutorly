@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { IconComponent } from '../icon/icon.component';
 
@@ -24,6 +24,7 @@ import { IconComponent } from '../icon/icon.component';
               <a routerLink="/tutors" routerLinkActive="text-foreground" class="hover:text-foreground transition-colors">Marketplace</a>
             } @else if (isLearner) {
               <a routerLink="/tutors" routerLinkActive="text-foreground" class="hover:text-foreground transition-colors">Find Tutors</a>
+              <a routerLink="/insight/diagnostic" routerLinkActive="text-foreground" class="hover:text-foreground transition-colors">Insight</a>
               <a routerLink="/saved-tutors" routerLinkActive="text-foreground" class="hover:text-foreground transition-colors">Saved Tutors</a>
               <a routerLink="/my-bookings" routerLinkActive="text-foreground" class="hover:text-foreground transition-colors">My Demos</a>
               <a routerLink="/messages" routerLinkActive="text-foreground" class="hover:text-foreground transition-colors">Messages</a>
@@ -38,25 +39,64 @@ import { IconComponent } from '../icon/icon.component';
           <div class="ml-auto flex items-center gap-2">
             @if (isTutor) {
               <span class="hidden md:inline-flex text-sm text-muted-foreground px-3 py-2">{{ userName }}</span>
-              <a routerLink="/tutor-dashboard" class="ref-find-button inline-flex items-center gap-2 rounded-xl bg-primary-gradient font-semibold text-primary-foreground shadow-glow hover:opacity-95 transition">Teacher Dashboard</a>
+              <a routerLink="/tutor-dashboard" class="ref-find-button inline-flex items-center gap-2 rounded-xl bg-primary-gradient font-semibold text-primary-foreground shadow-glow hover:opacity-95 transition">
+                <span class="ref-dashboard-full">Teacher Dashboard</span>
+                <span class="ref-dashboard-short">Dashboard</span>
+              </a>
+              <button type="button" class="ref-logout-button" aria-label="Logout" title="Logout" (click)="logout()">
+                <app-icon name="log-out" className="h-4 w-4" />
+                <span class="ref-logout-label">Logout</span>
+              </button>
             } @else if (isLearner) {
               <span class="hidden md:inline-flex text-sm text-muted-foreground px-3 py-2">{{ userName }}</span>
-              <a routerLink="/dashboard" class="ref-find-button inline-flex items-center gap-2 rounded-xl bg-primary-gradient font-semibold text-primary-foreground shadow-glow hover:opacity-95 transition">Learner Dashboard</a>
+              <a routerLink="/dashboard" class="ref-find-button inline-flex items-center gap-2 rounded-xl bg-primary-gradient font-semibold text-primary-foreground shadow-glow hover:opacity-95 transition">
+                <span class="ref-dashboard-full">Learner Dashboard</span>
+                <span class="ref-dashboard-short">Dashboard</span>
+              </a>
+              <button type="button" class="ref-logout-button" aria-label="Logout" title="Logout" (click)="logout()">
+                <app-icon name="log-out" className="h-4 w-4" />
+                <span class="ref-logout-label">Logout</span>
+              </button>
             } @else {
               <a routerLink="/login" class="hidden sm:inline-flex text-sm text-muted-foreground hover:text-foreground px-3 py-2">Login</a>
               <a routerLink="/tutors" class="ref-find-button inline-flex items-center gap-2 rounded-xl bg-primary-gradient font-semibold text-primary-foreground shadow-glow hover:opacity-95 transition">Find My Tutor</a>
             }
-            <button class="ref-menu-button lg:hidden text-foreground" aria-label="Menu">
+            <button type="button" class="ref-menu-button lg:hidden text-foreground" [attr.aria-expanded]="menuOpen" aria-label="Menu" (click)="toggleMenu()">
               <app-icon name="menu" className="ref-menu-symbol" />
             </button>
           </div>
         </div>
+        @if (menuOpen) {
+          <nav class="ref-mobile-drawer lg:hidden glass-strong shadow-card" aria-label="Mobile menu">
+            @if (isTutor) {
+              <a routerLink="/tutor-dashboard" routerLinkActive="text-foreground" (click)="closeMenu()">Teacher Portal</a>
+              <a routerLink="/messages" routerLinkActive="text-foreground" (click)="closeMenu()">Student Messages</a>
+              <a routerLink="/tutors" routerLinkActive="text-foreground" (click)="closeMenu()">Marketplace</a>
+            } @else if (isLearner) {
+              <a routerLink="/dashboard" routerLinkActive="text-foreground" (click)="closeMenu()">Learner Dashboard</a>
+              <a routerLink="/tutors" routerLinkActive="text-foreground" (click)="closeMenu()">Find Tutors</a>
+              <a routerLink="/insight/diagnostic" routerLinkActive="text-foreground" (click)="closeMenu()">Tutorly Insight</a>
+              <a routerLink="/saved-tutors" routerLinkActive="text-foreground" (click)="closeMenu()">Saved Tutors</a>
+              <a routerLink="/my-bookings" routerLinkActive="text-foreground" (click)="closeMenu()">My Demos</a>
+              <a routerLink="/messages" routerLinkActive="text-foreground" (click)="closeMenu()">Messages</a>
+            } @else {
+              <a routerLink="/tutors" routerLinkActive="text-foreground" (click)="closeMenu()">Find Tutors</a>
+              <a routerLink="/role" (click)="closeMenu()">Become a Tutor</a>
+              <a routerLink="/login" (click)="closeMenu()">Login</a>
+            }
+          </nav>
+        }
       </div>
     </header>
   `,
 })
 export class NavbarComponent {
-  constructor(private readonly authService: AuthService) {}
+  menuOpen = false;
+
+  constructor(
+    private readonly authService: AuthService,
+    private readonly router: Router,
+  ) {}
 
   get isTutor(): boolean {
     return this.authService.currentUser?.role === 'tutor';
@@ -69,5 +109,19 @@ export class NavbarComponent {
 
   get userName(): string {
     return this.authService.currentUser?.fullName ?? '';
+  }
+
+  logout(): void {
+    this.authService.clearSession();
+    this.closeMenu();
+    this.router.navigateByUrl('/login');
+  }
+
+  toggleMenu(): void {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  closeMenu(): void {
+    this.menuOpen = false;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
@@ -11,14 +11,14 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
   imports: [FormsModule, RouterLink, IconComponent],
   template: `
     <section class="mx-auto max-w-7xl px-6 py-8">
-      <div class="glass-strong rounded-3xl p-8 shadow-card bg-hero-gradient">
-        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+      <div class="glass-strong rounded-3xl p-8 shadow-card bg-hero-gradient premium-dashboard-hero">
+        <div class="premium-hero-row">
           <div>
             <div class="text-cyan text-xs font-bold uppercase tracking-wider mb-2">Tutorly Insight</div>
             <h1 class="font-display text-4xl font-bold">Start Free Level Check</h1>
             <p class="text-muted-foreground mt-2 max-w-2xl">Tutor lagane se pehle bachay ka real learning level samjhein.</p>
           </div>
-          <a routerLink="/dashboard" class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 font-semibold">
+          <a routerLink="/dashboard" class="premium-btn premium-btn--secondary">
             Back to dashboard
           </a>
         </div>
@@ -49,9 +49,9 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
 
             <div class="mt-6">
               <div class="text-sm text-muted-foreground mb-3">Subjects</div>
-              <div class="flex flex-wrap gap-3">
+              <div class="premium-chip-row flex flex-wrap gap-3">
                 @for (subject of subjects; track subject) {
-                  <label class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm">
+                  <label class="inline-flex items-center gap-2 px-4 py-2 text-sm">
                     <input type="checkbox" [checked]="selectedSubjects.includes(subject)" (change)="toggleSubject(subject)" />
                     {{ subjectLabel(subject) }}
                   </label>
@@ -63,7 +63,7 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
               <div class="mt-5 rounded-2xl border border-warning/30 bg-warning/10 px-4 py-3 text-sm text-warning">{{ error }}</div>
             }
 
-            <button class="mt-7 inline-flex items-center gap-2 rounded-xl bg-primary-gradient px-6 py-3.5 font-semibold text-primary-foreground shadow-glow" (click)="start()" [disabled]="loading">
+            <button class="mt-7 premium-btn premium-btn--primary" (click)="start()" [disabled]="loading || setupLoading || !selectedChildId || selectedSubjects.length === 0">
               <app-icon name="zap" className="h-4 w-4" />
               Start Diagnostic Test
             </button>
@@ -98,7 +98,7 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
 
           <div class="flex flex-wrap gap-3 mt-6">
             @for (subject of selectedSubjects; track subject) {
-              <button class="rounded-full border px-4 py-2 text-sm" [class.border-primary]="currentQuestion.subjectCode === subject" [class.bg-primary]="currentQuestion.subjectCode === subject" [class.text-primary-foreground]="currentQuestion.subjectCode === subject" [class.border-white/10]="currentQuestion.subjectCode !== subject" (click)="jumpToSubject(subject)">
+              <button class="premium-choice px-4 py-2 text-sm" [class.premium-choice-active]="currentQuestion.subjectCode === subject" (click)="jumpToSubject(subject)">
                 {{ subjectLabel(subject) }}
               </button>
             }
@@ -109,7 +109,7 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
             <h3 class="font-display text-2xl font-semibold mt-3">{{ currentQuestion.questionText }}</h3>
             <div class="grid md:grid-cols-2 gap-4 mt-6">
               @for (option of currentQuestion.options; track option.id) {
-                <button class="rounded-2xl border px-5 py-4 text-left transition" [class.border-primary]="answers[currentQuestion.id] === option.optionCode" [class.bg-primary/10]="answers[currentQuestion.id] === option.optionCode" [class.border-white/10]="answers[currentQuestion.id] !== option.optionCode" (click)="selectOption(option.optionCode)">
+                <button class="premium-choice px-5 py-4 text-left" [class.premium-choice-active]="answers[currentQuestion.id] === option.optionCode" (click)="selectOption(option.optionCode)">
                   <span class="font-semibold text-primary mr-2">{{ option.optionCode }}.</span>{{ option.optionText }}
                 </button>
               }
@@ -117,10 +117,10 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
           </div>
 
           <div class="flex flex-wrap justify-between gap-3 mt-6">
-            <button class="rounded-xl border border-white/10 px-5 py-3 font-semibold" (click)="previous()" [disabled]="currentIndex === 0">Previous</button>
+            <button class="premium-btn premium-btn--secondary" (click)="previous()" [disabled]="currentIndex === 0">Previous</button>
             <div class="flex gap-3">
-              <button class="rounded-xl border border-white/10 px-5 py-3 font-semibold" (click)="complete()" [disabled]="loading">Complete test</button>
-              <button class="inline-flex items-center gap-2 rounded-xl bg-primary-gradient px-6 py-3 font-semibold text-primary-foreground shadow-glow" (click)="saveAndNext()" [disabled]="loading || !answers[currentQuestion.id]">
+              <button class="premium-btn premium-btn--secondary" (click)="complete()" [disabled]="loading">Complete test</button>
+              <button class="premium-btn premium-btn--primary" (click)="saveAndNext()" [disabled]="loading || !answers[currentQuestion.id]">
                 {{ currentIndex === questions.length - 1 ? 'Save answer' : 'Next' }}
                 <app-icon name="arrow-right" className="h-4 w-4" />
               </button>
@@ -143,9 +143,14 @@ export class InsightDiagnosticComponent implements OnInit {
   currentIndex = 0;
   answers: Record<string, string> = {};
   loading = false;
+  setupLoading = true;
   error = '';
 
-  constructor(private readonly api: ApiService, private readonly router: Router) {}
+  constructor(
+    private readonly api: ApiService,
+    private readonly router: Router,
+    private readonly cdr: ChangeDetectorRef,
+  ) {}
 
   get currentQuestion(): InsightDiagnosticQuestion | undefined {
     return this.questions[this.currentIndex];
@@ -167,6 +172,8 @@ export class InsightDiagnosticComponent implements OnInit {
         this.selectedChildId = child.childId;
         this.currentClass = child.currentClass;
       }
+      this.setupLoading = false;
+      this.cdr.detectChanges();
     });
   }
 
@@ -181,7 +188,7 @@ export class InsightDiagnosticComponent implements OnInit {
   }
 
   start(): void {
-    if (!this.selectedChildId || this.selectedSubjects.length === 0) {
+    if (this.setupLoading || !this.selectedChildId || this.selectedSubjects.length === 0) {
       this.error = 'Select a child and at least one subject.';
       return;
     }
@@ -198,10 +205,12 @@ export class InsightDiagnosticComponent implements OnInit {
         this.questions = response.questions;
         this.currentIndex = 0;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.error = 'Diagnostic test could not be started. Please sign in again or check the API.';
         this.loading = false;
+        this.cdr.detectChanges();
       },
     });
   }
@@ -227,10 +236,12 @@ export class InsightDiagnosticComponent implements OnInit {
         if (this.currentIndex < this.questions.length - 1) {
           this.currentIndex += 1;
         }
+        this.cdr.detectChanges();
       },
       error: () => {
         this.loading = false;
         this.error = 'Answer could not be saved.';
+        this.cdr.detectChanges();
       },
     });
   }
@@ -257,6 +268,7 @@ export class InsightDiagnosticComponent implements OnInit {
       error: () => {
         this.loading = false;
         this.error = 'Learning Gap Report could not be generated.';
+        this.cdr.detectChanges();
       },
     });
   }
