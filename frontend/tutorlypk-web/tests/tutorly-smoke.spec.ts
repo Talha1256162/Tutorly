@@ -83,8 +83,22 @@ test('Tutorly core application smoke flow', async ({ page }, testInfo) => {
     await startDiagnosticButton.click();
     await expect(page.getByText('Question 1 of')).toBeVisible();
 
-    await page.locator('button').filter({ hasText: 'A.' }).first().click();
-    await page.getByRole('button', { name: 'Next' }).click();
+    for (let guard = 0; guard < 12; guard += 1) {
+      const questionLabel = await page.locator('text=/Question \\d+ of \\d+/').innerText();
+      const match = questionLabel.match(/Question (\d+) of (\d+)/);
+      const current = Number(match?.[1] ?? 1);
+      const total = Number(match?.[2] ?? 1);
+
+      await page.locator('button').filter({ hasText: 'A.' }).first().click();
+      await page.getByRole('button', { name: current === total ? 'Save answer' : 'Next' }).click();
+
+      if (current === total) {
+        break;
+      }
+
+      await expect(page.getByText(`Question ${current + 1} of ${total}`)).toBeVisible();
+    }
+
     await page.getByRole('button', { name: 'Complete test' }).click();
     await page.waitForURL('**/insight/report/**');
     await expect(page.getByText('Tutorly Insight Report')).toBeVisible();
@@ -97,7 +111,8 @@ test('Tutorly core application smoke flow', async ({ page }, testInfo) => {
 
   await test.step('tutor can log in and see teacher dashboard', async () => {
     await page.evaluate(() => localStorage.clear());
-    await page.goto(`${appUrl}/login`);
+    await page.goto(`${appUrl}/login`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('heading', { name: 'Welcome back' })).toBeVisible();
     await page.locator('input[name="emailOrPhone"]').fill(tutorEmail);
     await page.locator('input[name="password"]').fill(seedPassword);
     await page.locator('button[type="submit"]').click();

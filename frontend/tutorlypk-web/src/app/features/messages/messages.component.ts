@@ -17,6 +17,7 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
     <div class="min-h-screen relative pb-6">
       <app-navbar />
       <main class="pt-24 mx-auto max-w-7xl px-6">
+        <h1 class="sr-only">Messages</h1>
         @if (isLoading) {
           <section class="glass-strong rounded-3xl shadow-card p-10 text-center text-muted-foreground">Loading conversations...</section>
         } @else if (selected) {

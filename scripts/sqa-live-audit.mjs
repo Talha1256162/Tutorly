@@ -113,7 +113,7 @@ async function auditRouteSet(browser, viewport, roleName, credentials) {
 }
 
 async function login(page, credentials) {
-  await page.goto(`${baseUrl}/login`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  await page.goto(`${baseUrl}/login`, { waitUntil: 'domcontentloaded', timeout: 30000 });
   await page.locator('input[name="emailOrPhone"]').fill(credentials.emailOrPhone);
   await page.locator('input[name="password"]').fill(credentials.password);
   await Promise.all([
@@ -157,14 +157,31 @@ async function auditPage(page, viewport, roleName, route) {
   let mainStatus = null;
   let navigationError = null;
   try {
-    const response = await page.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    const response = await page.goto(`${baseUrl}${route}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
     mainStatus = response?.status() ?? null;
-    await page.waitForLoadState('networkidle', { timeout: 12000 }).catch(() => {});
+    await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
   } catch (error) {
     navigationError = error.message;
   }
 
   const metrics = await page.evaluate(() => {
+    if (!document.body) {
+      return {
+        title: document.title,
+        finalPath: location.pathname + location.search,
+        h1Count: 0,
+        horizontalOverflow: false,
+        scrollWidth: document.documentElement?.scrollWidth ?? 0,
+        innerWidth: window.innerWidth,
+        bodyTextLength: 0,
+        brokenImages: [],
+        overflowingText: [],
+        emptyInteractive: [],
+        smallTapTargets: [],
+        inputsWithoutLabels: [],
+      };
+    }
+
     const visible = element => {
       const style = window.getComputedStyle(element);
       const rect = element.getBoundingClientRect();
