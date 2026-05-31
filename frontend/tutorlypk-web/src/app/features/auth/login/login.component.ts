@@ -116,10 +116,15 @@ declare global {
 
             <div class="auth-divider">OR</div>
             @if (googleAuthLoading) {
-              <button type="button" class="premium-btn premium-btn--secondary w-full" disabled>Loading Google sign-in...</button>
+              <div class="google-auth-card google-auth-card--loading">
+                <span class="google-fallback-mark">G</span>
+                <span>Loading Google sign-in...</span>
+              </div>
             } @else if (googleClientId) {
-              <div class="google-signin-shell" [class.google-signin-shell--busy]="isGoogleSubmitting">
-                <div #googleButton class="google-signin-button" aria-label="Continue with Google"></div>
+              <div class="google-auth-card google-auth-card--official" [class.google-auth-card--busy]="isGoogleSubmitting">
+                <div class="google-signin-shell">
+                  <div #googleButton class="google-signin-button" aria-label="Continue with Google"></div>
+                </div>
                 @if (isGoogleSubmitting) {
                   <div class="google-signin-overlay">Signing in...</div>
                 }
@@ -127,7 +132,10 @@ declare global {
             } @else {
               <button type="button" class="google-fallback-btn" (click)="showGoogleSetupHelp()" title="Google Client ID is required">
                 <span class="google-fallback-mark">G</span>
-                Continue with Google
+                <span class="google-fallback-text">
+                  <span>Fast sign-in</span>
+                  <strong>Continue with Google</strong>
+                </span>
               </button>
             }
             <div class="auth-footer">New to Mentora? <a routerLink="/role" class="auth-link">Create account</a></div>
